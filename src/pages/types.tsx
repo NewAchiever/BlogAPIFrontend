@@ -17,9 +17,8 @@ export interface SignupFormData {
 export interface LoginResponse {
   token: string;
   user: {
-    id: string;
-    email: string;
-    name?: string;
+    id: number;
+    username: string;
   };
 }
 

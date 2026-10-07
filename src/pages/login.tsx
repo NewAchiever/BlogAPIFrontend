@@ -2,9 +2,10 @@ import React, { useState, type ChangeEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { LoginFormData, LoginResponse, ApiError } from './types';
 import { PATHS } from '../routes/routes.config';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -48,10 +49,11 @@ export default function Login() {
 
       const data: LoginResponse = await response.json();
       
+
       
       // Save your authentication token (JWT) safely
       localStorage.setItem('token', data.token);
-      
+      setUser(data.user);
       // Redirect or update application auth state here
       //window.location.href = "http://localhost:5173/get_posts";
       navigate(PATHS.BLOG, { replace: true });

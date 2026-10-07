@@ -9,7 +9,7 @@ interface PostFormState {
   category: string;
   excerpt: string;
   content: string;
-  coverImage: string | null;
+  coverImage: File | null;
   tags: string;
   isPublished: boolean;
 }
@@ -68,7 +68,7 @@ export const CreatePostPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, coverImage: imageUrl }));
+      setFormData((prev) => ({ ...prev, coverImage: file }));
     }
   };
 
@@ -78,14 +78,35 @@ export const CreatePostPage: React.FC = () => {
   };
 
   // Mock Form Submit handling
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    console.log("formData", formData);
+    const blogData = new FormData(e.currentTarget);
 
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value instanceof File) {
+          blogData.append(key, value);
+      } else {
+          blogData.append(key, String(value));
+      }
+  });
+    const response = await fetch('http://localhost/blog_api/public/add_post',{
+      method: 'POST',
+      credentials: 'include',
+      body: blogData
+    });
+
+    if(response.status === 200){
+      console.log("Post Created");
+    }
+    else{
+      console.log(response);
+    }
     // Mock an external server latency window
     setTimeout(() => {
       console.log('Successfully Compiled Blog Post Data Object Payload:', formData);
-      alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
+      //alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
       setIsSubmitting(false);
     }, 1000);
   };

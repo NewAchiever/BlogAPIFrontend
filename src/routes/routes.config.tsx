@@ -13,6 +13,7 @@ import Logout from '../pages/logout';
 import { CreatePostPage } from '../pages/createPost';
 import { ChangePasswordPage } from '../pages/changePasswordPage';
 import { UserProfilePage } from '../pages/UserProfilePage';
+import AppLayout from '../AppLayout';
 
 // 1. Centralized Paths
 export interface RoutesConfig {
@@ -45,19 +46,22 @@ export const PATHS: RoutesConfig = {
 
 // 2. Flat Route Definitions (No RootLayout needed)
 const routes: RouteObject[] = [
-  { path: PATHS.LOGIN, element: <Login /> },
-  { path: PATHS.LOGOUT, element: <Logout /> },
-  { path: PATHS.SIGNUP, element: <Signup /> },
-  { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
-  { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
-  { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
-  { path: PATHS.HOME, element: <Home /> },
-  { path: PATHS.BLOG, element: <BlogList /> },
-  { path: PATHS.BLOG_DETAIL(), element: <BlogPostDetail /> },
-  { path: PATHS.ABOUT, element: <About /> },
-  
-  // Wildcard redirect for unknown URLs
-  { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
+  {
+    element: <AppLayout/>,
+    children: [
+        { path: PATHS.LOGIN, element: <Login /> },
+        { path: PATHS.LOGOUT, element: <Logout /> },
+        { path: PATHS.SIGNUP, element: <Signup /> },
+        { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
+        { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
+        { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
+        { path: PATHS.HOME, element: <Home /> },
+        { path: PATHS.BLOG, element: <BlogList /> },
+        { path: PATHS.BLOG_DETAIL(), element: <BlogPostDetail /> },
+        { path: PATHS.ABOUT, element: <About /> },
+        { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
+      ]
+  }
 ];
 
 export const router = createBrowserRouter(routes);
