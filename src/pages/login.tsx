@@ -5,7 +5,7 @@ import { PATHS } from '../routes/routes.config';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const { setUser } = useAuth();
+  const { setUser, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -54,6 +54,7 @@ export default function Login() {
       // Save your authentication token (JWT) safely
       localStorage.setItem('token', data.token);
       setUser(data.user);
+      setIsLoggedIn(true);
       // Redirect or update application auth state here
       //window.location.href = "http://localhost:5173/get_posts";
       navigate(PATHS.BLOG, { replace: true });

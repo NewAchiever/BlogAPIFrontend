@@ -4,7 +4,7 @@ import { PATHS } from "../routes/routes.config";
 function Navbar() {
   const { user, isLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();
-
+  console.log("logged", isLoggedIn);
   const handleLogout = async () => {
     try {
       const response = await fetch(

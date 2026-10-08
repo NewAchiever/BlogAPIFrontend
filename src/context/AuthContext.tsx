@@ -9,6 +9,7 @@ type AuthContextType = {
   user: User | null;
   setUser: (user: User | null) => void;
   isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,13 +25,15 @@ export function useAuth() {
 }
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         setUser,
-        isLoggedIn: user !== null,
+        isLoggedIn,
+        setIsLoggedIn,
       }}
     >
       {children}
