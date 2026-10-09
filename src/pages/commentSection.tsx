@@ -124,7 +124,7 @@ const updateComment = (
 
        
     try {
-      const response = await fetch(`http://localhost/blog_api/public/like_comment`, {
+      const response = await fetch(`http://localhost/blog_api/public/comments/like_comment`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -182,7 +182,7 @@ const updateComment = (
     const reply = formData.get("reply");
     console.log(reply);
     try {
-      const response = await fetch(`http://localhost/blog_api/public/comment_reply`, {
+      const response = await fetch(`http://localhost/blog_api/public/comments/comment_reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -226,7 +226,7 @@ const updateComment = (
     }
        
     try {
-      const response = await fetch(`http://localhost/blog_api/public/view_more`, {
+      const response = await fetch(`http://localhost/blog_api/public/comments/view_more`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

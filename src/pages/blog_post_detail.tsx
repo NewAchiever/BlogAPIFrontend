@@ -29,7 +29,7 @@ export default function BlogPostDetail() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost/blog_api/public/get_post/${postId}`,
+        const response = await fetch(`http://localhost/blog_api/public/posts/get_post/${postId}`,
             {
                 credentials: 'include',
             }
@@ -57,7 +57,7 @@ export default function BlogPostDetail() {
   const handleSave = async() => {
     if (!post) return;
     try{
-      const response = await fetch('http://localhost/blog_api/public/handle_save_post', {
+      const response = await fetch('http://localhost/blog_api/public/posts/handle_save_post', {
         method: "POST",
         headers: {'Content-Type' : 'application/json'},
         credentials: 'include',
@@ -89,7 +89,7 @@ export default function BlogPostDetail() {
     setPost({ ...post, likes: nextLikesCount, isLiked: nextIsLiked });
 
     try {
-      const response = await fetch(`http://localhost/blog_api/public/like_post`, {
+      const response = await fetch(`http://localhost/blog_api/public/posts/like_post`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

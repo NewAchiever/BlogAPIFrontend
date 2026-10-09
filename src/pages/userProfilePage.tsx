@@ -55,7 +55,7 @@ export const UserProfilePage: React.FC = () => {
         try {
           setLoading(true);
           // Replace with your actual backend endpoint
-          const response = await fetch('http://localhost/blog_api/public/get_user_profile',{
+          const response = await fetch('http://localhost/blog_api/public/users/get_user_profile',{
               method: 'GET',
               credentials: 'include',
           });
@@ -110,7 +110,7 @@ export const UserProfilePage: React.FC = () => {
       }
   });
     try{
-      const response = await fetch('http://localhost/blog_api/public/update_user_profile', {
+      const response = await fetch('http://localhost/blog_api/public/users/update_user_profile', {
           method: 'POST',
           credentials: 'include', 
           body: formData,
@@ -149,7 +149,7 @@ export const UserProfilePage: React.FC = () => {
   // Remove a bookmark from the saved feed list state array
   const handleUnsaveBlog = async (id: number) => {
     try{
-      const response = await fetch('http://localhost/blog_api/public/handle_save_post', {
+      const response = await fetch('http://localhost/blog_api/public/posts/handle_save_post', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json'},

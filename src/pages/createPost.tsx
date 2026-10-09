@@ -91,7 +91,7 @@ export const CreatePostPage: React.FC = () => {
           blogData.append(key, String(value));
       }
   });
-    const response = await fetch('http://localhost/blog_api/public/add_post',{
+    const response = await fetch('http://localhost/blog_api/public/posts/add_post',{
       method: 'POST',
       credentials: 'include',
       body: blogData

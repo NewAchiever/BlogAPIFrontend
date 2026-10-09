@@ -15,7 +15,7 @@ export default function BlogList() {
       try {
         setLoading(true);
         // Replace with your actual backend endpoint
-        const response = await fetch('http://localhost/blog_api/public/get_post',{
+        const response = await fetch('http://localhost/blog_api/public/posts/get_post',{
             method: 'GET',
             credentials: 'include',
         });
@@ -57,7 +57,7 @@ export default function BlogList() {
 /*
     try {
       // Sync update with backend
-      const response = await fetch(`http://localhost/blog_api/public/get_post`, {
+      const response = await fetch(`http://localhost/blog_api/public/posts/get_post`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isLiked: nextIsLiked }),

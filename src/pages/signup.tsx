@@ -38,7 +38,7 @@ setLoading(true);
 
 try {
 
-const response = await fetch('http://localhost/blog_api/public/add_user', {
+const response = await fetch('http://localhost/blog_api/public/authentication/add_user', {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',
