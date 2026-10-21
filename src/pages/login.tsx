@@ -2,9 +2,10 @@ import React, { useState, type ChangeEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { LoginFormData, LoginResponse, ApiError } from './types';
 import { PATHS } from '../routes/routes.config';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  
+  const { setUser, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -21,7 +22,7 @@ export default function Login() {
   // 2. Strongly typed change handler
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: FormData) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -34,7 +35,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {      
-      const response = await fetch('http://localhost/blog_api/public/login', {
+      const response = await fetch('http://localhost/blog_api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', 
@@ -48,10 +49,12 @@ export default function Login() {
 
       const data: LoginResponse = await response.json();
       
+
       
       // Save your authentication token (JWT) safely
       localStorage.setItem('token', data.token);
-      
+      setUser(data.user);
+      setIsLoggedIn(true);
       // Redirect or update application auth state here
       //window.location.href = "http://localhost:5173/get_posts";
       navigate(PATHS.BLOG, { replace: true });

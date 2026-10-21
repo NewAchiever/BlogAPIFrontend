@@ -17,9 +17,8 @@ export interface SignupFormData {
 export interface LoginResponse {
   token: string;
   user: {
-    id: string;
-    email: string;
-    name?: string;
+    id: number;
+    username: string;
   };
 }
 
@@ -41,6 +40,7 @@ export interface Comment {
   showReplies: boolean;
   showReplyForm: boolean;
   replies: Comment[];
+  total_replies: number;
 }
 
 export interface CommentSectionProps {
@@ -54,7 +54,7 @@ export interface commentComponentProps {
     depth: number;
     comment: Comment;
     setComments: Dispatch<SetStateAction<Comment[]>>;
-    updateComment:  (comments: Comment[], commentId: number, updates: Partial<Comment>) => Comment;
+    updateComment:  (comments: Comment[], commentId: number, updates: Partial<Comment>) => Comment[];
     textInput: string;
     handleLike: (commentId: number) => void;
     handleReply: (e:React.FormEvent<HTMLFormElement>, commentId: number) => void;
@@ -63,5 +63,18 @@ export interface commentComponentProps {
     setTextInput: Dispatch<SetStateAction<string>>;
     isSubmitting: boolean;
     setIsSubmitting: Dispatch<SetStateAction<boolean>>;
+
+}
+
+
+export interface Post{
+  id: number;
+  cover_image: string;
+  title: string;
+  author: string;
+  excerpt: string;
+  comments: string;
+  likes: number;
+  isLiked?: boolean;
 
 }

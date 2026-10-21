@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../routes/routes.config';
+import { type ApiError } from './types';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -22,7 +23,8 @@ interface FollowedAuthor {
 interface UserProfileState {
   username: string;
   email: string;
-  profile_pic: File;
+  profile_pic: File | undefined;
+  profile_pic_url: string;
 }
 
 // ==========================================
@@ -30,7 +32,12 @@ interface UserProfileState {
 // ==========================================
 export const UserProfilePage: React.FC = () => {
   // Mock initial data states
-  const [profile, setProfile] = useState<UserProfileState>();
+  const [profile, setProfile] = useState<UserProfileState>({
+    username: "",
+    email: "",
+    profile_pic: undefined,
+    profile_pic_url: ""
+  });
 
   const [savedBlogs, setSavedBlogs] = useState<SavedBlog[]>([]);
 
@@ -42,7 +49,12 @@ export const UserProfilePage: React.FC = () => {
 
   // Form edit states
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
-  const [editForm, setEditForm] = useState<UserProfileState>({ ...profile });
+  const [editForm, setEditForm] = useState<UserProfileState>({
+    username: "",
+    email: "",
+    profile_pic: undefined,
+    profile_pic_url: ""
+  });
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +67,7 @@ export const UserProfilePage: React.FC = () => {
         try {
           setLoading(true);
           // Replace with your actual backend endpoint
-          const response = await fetch('http://localhost/blog_api/public/get_user_profile',{
+          const response = await fetch('http://localhost/blog_api/user/getuserprofile',{
               method: 'GET',
               credentials: 'include',
           });
@@ -83,7 +95,7 @@ export const UserProfilePage: React.FC = () => {
   // Unified input management for personal details form
   const handleProfileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditForm((prev) => ({ ...prev, [name]: value }));
+    if(String(value) !== "") setEditForm((prev) => ({ ...prev, [name]: value }));
     
   };
 
@@ -92,8 +104,8 @@ export const UserProfilePage: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const localUrl = URL.createObjectURL(file);
-      setProfile((prev) => ({ ...prev, profile_pic: localUrl }));
-      setEditForm((prev) => ({ ...prev, profile_pic: file }));
+      setProfile((prev:UserProfileState) => ({ ...prev, profile_pic: file, profile_pic_url: localUrl }));
+      setEditForm((prev:UserProfileState) => ({ ...prev, profile_pic: file, profile_pic_url: localUrl }));
     }
   };
 
@@ -101,23 +113,28 @@ export const UserProfilePage: React.FC = () => {
   const handleSaveProfile = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData();
+    
     Object.entries(editForm).forEach(([key, value]) => {
       if (value instanceof File) {
           formData.append(key, value);
       } else {
-          formData.append(key, String(value));
+          if(profile?.[key as keyof typeof profile] !== value && String(value ?? "").trim() !== ""){
+            formData.append(key, String(value));
+          }
+          
       }
   });
+
     try{
-      const response = await fetch('http://localhost/blog_api/public/update_user_profile', {
+      const response = await fetch('http://localhost/blog_api/user/updateuserprofile', {
           method: 'POST',
           credentials: 'include', 
           body: formData,
         });
       if(response.status === 200){
-        navigate(0);
-        //console.log(response.json()) ;
+        //navigate(0);
+        console.log(response.json()) ;
       }
       if (! (response.status === 200)) {
         const errorData: ApiError = await response.json();
@@ -149,7 +166,7 @@ export const UserProfilePage: React.FC = () => {
   // Remove a bookmark from the saved feed list state array
   const handleUnsaveBlog = async (id: number) => {
     try{
-      const response = await fetch('http://localhost/blog_api/public/handle_save_post', {
+      const response = await fetch('http://localhost/blog_api/public/posts/handle_save_post', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json'},
@@ -157,7 +174,6 @@ export const UserProfilePage: React.FC = () => {
             postId: id,
             isSaved: false
         })
-
       })
       if(response.status === 200){
         setSavedBlogs((prev) => prev.filter((blog) => blog.id !== id));
@@ -189,7 +205,7 @@ export const UserProfilePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left w-full">
               <div className="relative group">
                 <img 
-                  src={profile?.profile_pic} 
+                  src={profile?.profile_pic_url} 
                   alt="User Avatar Profile Banner" 
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200 shadow-sm"
                 />

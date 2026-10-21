@@ -16,9 +16,9 @@ const [loading, setLoading] = useState(false);
 const [success, setSuccess] = useState(false);
 
 // Handle typing inputs safely
-const handleChange = (e: React.ChangeEvent) => {
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 const { name, value } = e.target;
-setFormData((prev:FormData) => ({
+setFormData((prev) => ({
 ...prev,
 [name]: value,
 }));
@@ -38,7 +38,7 @@ setLoading(true);
 
 try {
 
-const response = await fetch('http://localhost/blog_api/public/add_user', {
+const response = await fetch('http://localhost/blog_api/public/authentication/add_user', {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',

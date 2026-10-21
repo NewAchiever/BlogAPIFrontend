@@ -9,7 +9,8 @@ interface PostFormState {
   category: string;
   excerpt: string;
   content: string;
-  coverImage: string | null;
+  coverImage: File | null;
+  coverImageTmpPath: string;
   tags: string;
   isPublished: boolean;
 }
@@ -26,6 +27,7 @@ export const CreatePostPage: React.FC = () => {
     excerpt: '',
     content: '',
     coverImage: null,
+    coverImageTmpPath: "",
     tags: '',
     isPublished: false,
   });
@@ -68,24 +70,45 @@ export const CreatePostPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, coverImage: imageUrl }));
+      setFormData((prev) => ({ ...prev, coverImage: file, coverImageTmpPath: imageUrl }));
     }
   };
 
   // Reset the file selector view
   const clearCoverImage = () => {
-    setFormData((prev) => ({ ...prev, coverImage: null }));
+    setFormData((prev) => ({ ...prev, coverImage: null, coverImageTmpPath: "" }));
   };
 
   // Mock Form Submit handling
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    console.log("formData", formData);
+    const blogData = new FormData(e.currentTarget);
 
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value instanceof File) {
+          blogData.append(key, value);
+      } else {
+          blogData.append(key, String(value));
+      }
+  });
+    const response = await fetch('http://localhost/blog_api/post/createpost',{
+      method: 'POST',
+      credentials: 'include',
+      body: blogData
+    });
+
+    if(response.status === 200){
+      console.log("Post Created");
+    }
+    else{
+      console.log(response);
+    }
     // Mock an external server latency window
     setTimeout(() => {
       console.log('Successfully Compiled Blog Post Data Object Payload:', formData);
-      alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
+      //alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
       setIsSubmitting(false);
     }, 1000);
   };
@@ -176,7 +199,7 @@ export const CreatePostPage: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
                 {formData.coverImage ? (
                   <div className="relative rounded-md overflow-hidden border border-gray-200">
-                    <img src={formData.coverImage} alt="Uploaded form banner" className="w-full h-44 object-cover" />
+                    <img src={formData.coverImageTmpPath} alt="Uploaded form banner" className="w-full h-44 object-cover" />
                     <button
                       type="button"
                       onClick={clearCoverImage}
@@ -279,7 +302,7 @@ export const CreatePostPage: React.FC = () => {
               {/* Layout Presentation Mock Card */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
                 {formData.coverImage ? (
-                  <img src={formData.coverImage} alt="Cover preview card mockup" className="w-full h-48 object-cover" />
+                  <img src={formData.coverImageTmpPath} alt="Cover preview card mockup" className="w-full h-48 object-cover" />
                 ) : (
                   <div className="w-full h-48 bg-gray-100 border-b border-gray-200 flex flex-col items-center justify-center text-gray-400 gap-1">
                     <svg className="w-8 h-8 opacity-60" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">

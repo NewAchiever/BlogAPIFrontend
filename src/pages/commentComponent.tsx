@@ -26,7 +26,7 @@ export default function CommentComponent({
                   <div className="p-1.5 bg-slate-100 rounded-full text-slate-500">
                     <User className="w-4 h-4"/>
                   </div>
-                  <span className="font-semibold text-slate-800 text-sm">{comment.username}</span>
+                  <span className="font-semibold text-slate-800 text-sm">{comment.author}</span>
                 </div>
                 <span className="text-xs text-slate-400">
                   {new Date(comment.createdAt).toLocaleDateString()}

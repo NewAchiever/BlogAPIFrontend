@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Heart,Bookmark, ArrowLeft, Loader2, User } from 'lucide-react';
 import { PATHS } from '../routes/routes.config';
-import { CommentSection, type Comment } from './commentSection';
+import { CommentSection} from './commentSection';
+import {type Comment } from './types';
 
 export interface BlogPostDetailData {
   id: number;
@@ -26,10 +27,11 @@ export default function BlogPostDetail() {
   useEffect(() => {
     const fetchPostDetail = async () => {
       try {
+
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost/blog_api/public/get_post/${postId}`,
+        const response = await fetch(`http://localhost/blog_api/post/getpost/${postId}`,
             {
                 credentials: 'include',
             }
@@ -57,7 +59,7 @@ export default function BlogPostDetail() {
   const handleSave = async() => {
     if (!post) return;
     try{
-      const response = await fetch('http://localhost/blog_api/public/handle_save_post', {
+      const response = await fetch('http://localhost/blog_api/post/updatesavedpost', {
         method: "POST",
         headers: {'Content-Type' : 'application/json'},
         credentials: 'include',
@@ -66,7 +68,6 @@ export default function BlogPostDetail() {
           isSaved: !post.isSaved
         })
       });
-
       if(response.status === 200){
         setPost({...post, isSaved: !post.isSaved}); 
       }else{
@@ -81,24 +82,23 @@ export default function BlogPostDetail() {
   // 2. Handle Like Toggle with optimistic UI update
   const handleLike = async () => {
     if (!post) return;
-
-    const nextIsLiked = !post.isLiked;
+    
+    const nextIsLiked = post.isLiked ? false : true;
     const nextLikesCount = nextIsLiked ? post.likes + 1 : post.likes - 1;
-
+    
     // Immediate UI update
     setPost({ ...post, likes: nextLikesCount, isLiked: nextIsLiked });
-
+  
     try {
-      const response = await fetch(`http://localhost/blog_api/public/like_post`, {
+      const response = await fetch(`http://localhost/blog_api/post/updatepostlike`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({  
           isLiked: nextIsLiked,
           postId: post.id
         }),
         credentials: 'include'
       });
-
       if (!response.ok) {
         throw new Error('Failed to update like status');
       }
