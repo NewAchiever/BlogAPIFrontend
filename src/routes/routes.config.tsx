@@ -55,7 +55,7 @@ const routes: RouteObject[] = [
         { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
         { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
         { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
-        { path: PATHS.HOME, element: <Home /> },
+        { path: PATHS.HOME, element: <BlogList /> },
         { path: PATHS.BLOG, element: <BlogList /> },
         { path: PATHS.BLOG_DETAIL(), element: <BlogPostDetail /> },
         { path: PATHS.ABOUT, element: <About /> },

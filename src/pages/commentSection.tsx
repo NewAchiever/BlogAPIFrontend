@@ -20,19 +20,19 @@ export function CommentSection({ postId, commentsFromDB, onAddComment }: Comment
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!textInput.trim() || !authorInput.trim()) return;
+    if (!textInput.trim()) return;
+    console.log("Clciked");
 
     setIsSubmitting(true);
 
     const commentPayload = {
-      author: authorInput.trim(),
-      text: textInput.trim(),
-      createdAt: new Date().toISOString(),
+      comment: textInput.trim(),
+      postId: postId,
     };
-
+    console.log(commentPayload);
     try {
       // API call to save comment
-      const response = await fetch(`/api/posts/${postId}/comments`, {
+      const response = await fetch(`http://localhost/blog_api/comment/addcomment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentPayload),
@@ -41,7 +41,7 @@ export function CommentSection({ postId, commentsFromDB, onAddComment }: Comment
       if (!response.ok) {
         throw new Error('Failed to post comment');
       }
-
+      console.log(response);
       const createdComment: Comment = await response.json();
       onAddComment(createdComment);
 
@@ -124,7 +124,7 @@ const updateComment = (
 
        
     try {
-      const response = await fetch(`http://localhost/blog_api/public/comments/like_comment`, {
+      const response = await fetch(`http://localhost/blog_api/comment/updatecommentlike`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -179,18 +179,21 @@ const updateComment = (
     
     
     const formData = new FormData(e.currentTarget);
-    const reply = formData.get("reply");
-    console.log(reply);
+    const newReply = formData.get("reply");
+    const parentCommentId = commentId;
     try {
-      const response = await fetch(`http://localhost/blog_api/public/comments/comment_reply`, {
+      const response = await fetch(`http://localhost/blog_api/comment/addcomment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
+          postId: postId, 
           commentId: comment.id,
-          comment: reply
+          comment: newReply
         }),
         credentials: 'include'
       });
+
+      console.log(response);
       // Immediate UI change
       /*
       setComments(prev => 
@@ -226,7 +229,7 @@ const updateComment = (
     }
        
     try {
-      const response = await fetch(`http://localhost/blog_api/public/comments/view_more`, {
+      const response = await fetch(`http://localhost/blog_api/comment/getmorereply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -238,7 +241,7 @@ const updateComment = (
       const data: Comment[] = await response.json();
       
       // Immediate UI change
-      console.log("Data: ", data, commentId);
+
       setComments(prev =>
         updateComment(prev, commentId, {
           showReplies: true, replies: data 
@@ -260,7 +263,7 @@ const updateComment = (
       <div className="flex items-center space-x-2 mb-6">
         <MessageSquare className="w-5 h-5 text-indigo-600" />
         <h2 className="text-2xl font-bold text-slate-900">
-          Comments ({comments.length})
+          Comments ({comments?.length})
         </h2>
       </div>
 

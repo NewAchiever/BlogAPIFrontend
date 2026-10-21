@@ -15,7 +15,7 @@ export default function BlogList() {
       try {
         setLoading(true);
         // Replace with your actual backend endpoint
-        const response = await fetch('http://localhost/blog_api/public/posts/get_post',{
+        const response = await fetch('http://localhost/blog_api/post/getallpost',{
             method: 'GET',
             credentials: 'include',
         });
@@ -113,38 +113,48 @@ export default function BlogList() {
           {posts.map((post) => (
             <article
               key={post.id}
-              className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
+              className="flex flex-row bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
             >
+              <div>
+                <img
+                  src={post.cover_image}
+                  alt='coverPic'
+                  className='w-32 h-32'
+                />   
+              </div>
               {/* Title integrated with router config */}
-              <h2 className="text-xl font-semibold text-slate-900 mb-4 hover:text-indigo-600 transition-colors">
-                <Link to={PATHS.BLOG_DETAIL(post.id)}>
-                  {post.title}
-                </Link>
-              </h2>
+              <div className='w-full'>
+                <h2 className="text-xl font-semibold text-slate-900 mb-4 hover:text-indigo-600 transition-colors">
+                  <Link to={PATHS.BLOG_DETAIL(post.id)}>
+                    {post.title}
+                  </Link>
+                </h2>
+                
+                <div className="flex items-center justify-between text-sm text-slate-600 border-t border-slate-100 pt-4">
+                  
+                  <div className="flex items-center space-x-2">
+                    <User className="w-4 h-4 text-slate-400" />
+                    <span className="font-medium text-slate-700">{post.author}</span>
+                  </div>
+                  <span>Excerpt:{post.excerpt}</span>
+                  <div className="flex items-center space-x-6">
+                    <button
+                      onClick={() => handleLike(post.id)}
+                      className={`flex items-center space-x-1.5 transition-colors ${
+                        post.isLiked ? 'text-rose-600' : 'text-slate-500 hover:text-rose-600'
+                      }`}
+                      aria-label="Like post"
+                    >
+                      <Heart
+                        className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`}
+                      />
+                      <span className="font-medium">{post.likes}</span>
+                    </button>
 
-              <div className="flex items-center justify-between text-sm text-slate-600 border-t border-slate-100 pt-4">
-                <div className="flex items-center space-x-2">
-                  <User className="w-4 h-4 text-slate-400" />
-                  <span className="font-medium text-slate-700">{post.author}</span>
-                </div>
-
-                <div className="flex items-center space-x-6">
-                  <button
-                    onClick={() => handleLike(post.id)}
-                    className={`flex items-center space-x-1.5 transition-colors ${
-                      post.isLiked ? 'text-rose-600' : 'text-slate-500 hover:text-rose-600'
-                    }`}
-                    aria-label="Like post"
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`}
-                    />
-                    <span className="font-medium">{post.likes}</span>
-                  </button>
-
-                  <div className="flex items-center space-x-1.5 text-slate-500">
-                    <MessageSquare className="w-4 h-4" />
-                    <span className="font-medium">{post.comments}</span>
+                    <div className="flex items-center space-x-1.5 text-slate-500">
+                      <MessageSquare className="w-4 h-4" />
+                      <span className="font-medium">{post.comments}</span>
+                    </div>
                   </div>
                 </div>
               </div>

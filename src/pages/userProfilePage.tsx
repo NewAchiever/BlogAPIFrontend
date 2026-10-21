@@ -55,7 +55,7 @@ export const UserProfilePage: React.FC = () => {
         try {
           setLoading(true);
           // Replace with your actual backend endpoint
-          const response = await fetch('http://localhost/blog_api/public/users/get_user_profile',{
+          const response = await fetch('http://localhost/blog_api/user/getuserprofile',{
               method: 'GET',
               credentials: 'include',
           });
@@ -83,7 +83,7 @@ export const UserProfilePage: React.FC = () => {
   // Unified input management for personal details form
   const handleProfileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditForm((prev) => ({ ...prev, [name]: value }));
+    if(String(value) !== "") setEditForm((prev) => ({ ...prev, [name]: value }));
     
   };
 
@@ -101,23 +101,31 @@ export const UserProfilePage: React.FC = () => {
   const handleSaveProfile = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData();
+    console.log(formData);
+    console.log(editForm);
     Object.entries(editForm).forEach(([key, value]) => {
       if (value instanceof File) {
           formData.append(key, value);
       } else {
-          formData.append(key, String(value));
+          if(profile?.[key as keyof typeof profile] !== value && String(value ?? "").trim() !== ""){
+            formData.append(key, String(value));
+          }
+          
       }
   });
+    for (const [key, value] of formData.entries()) {
+        console.log("sdfsdf", key, value);
+    }
     try{
-      const response = await fetch('http://localhost/blog_api/public/users/update_user_profile', {
+      const response = await fetch('http://localhost/blog_api/user/updateuserprofile', {
           method: 'POST',
           credentials: 'include', 
           body: formData,
         });
       if(response.status === 200){
-        navigate(0);
-        //console.log(response.json()) ;
+        //navigate(0);
+        console.log(response.json()) ;
       }
       if (! (response.status === 200)) {
         const errorData: ApiError = await response.json();
@@ -157,7 +165,6 @@ export const UserProfilePage: React.FC = () => {
             postId: id,
             isSaved: false
         })
-
       })
       if(response.status === 200){
         setSavedBlogs((prev) => prev.filter((blog) => blog.id !== id));
