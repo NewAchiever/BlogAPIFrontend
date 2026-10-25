@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { API_BASE_URL } from '../config/api';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -93,7 +93,7 @@ export const CreatePostPage: React.FC = () => {
           blogData.append(key, String(value));
       }
   });
-    const response = await fetch('http://localhost/blog_api/post/createpost',{
+    const response = await fetch(`${API_BASE_URL}/post/createpost`,{
       method: 'POST',
       credentials: 'include',
       body: blogData

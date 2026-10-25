@@ -3,7 +3,7 @@ import { Heart, Reply, MessageSquare, Send, User, ChevronDown } from 'lucide-rea
 import { addReply } from './commentUtils';
 import CommentComponent from './commentComponent';
 import { type Comment, type CommentSectionProps } from './types';
-
+import { API_BASE_URL } from '../config/api';
 export function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
   const [authorInput, setAuthorInput] = useState('');
   const [textInput, setTextInput] = useState('');
@@ -32,7 +32,7 @@ export function CommentSection({ postId, commentsFromDB, onAddComment }: Comment
     console.log(commentPayload);
     try {
       // API call to save comment
-      const response = await fetch(`http://localhost/blog_api/comment/addcomment`, {
+      const response = await fetch(`${API_BASE_URL}/comment/addcomment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentPayload),
@@ -124,7 +124,7 @@ const updateComment = (
 
        
     try {
-      const response = await fetch(`http://localhost/blog_api/comment/updatecommentlike`, {
+      const response = await fetch(`${API_BASE_URL}/comment/updatecommentlike`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -183,7 +183,7 @@ const updateComment = (
     if (typeof replyValue !== "string") return;
     const parentCommentId = commentId;
     try {
-      const response = await fetch(`http://localhost/blog_api/comment/addcomment`, {
+      const response = await fetch(`${API_BASE_URL}/comment/addcomment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -235,7 +235,7 @@ const updateComment = (
     }
        
     try {
-      const response = await fetch(`http://localhost/blog_api/comment/getmorereply`, {
+      const response = await fetch(`${API_BASE_URL}/comment/getmorereply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

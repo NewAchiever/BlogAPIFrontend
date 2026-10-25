@@ -4,6 +4,7 @@ import { Heart,Bookmark, ArrowLeft, Loader2, User } from 'lucide-react';
 import { PATHS } from '../routes/routes.config';
 import { CommentSection} from './commentSection';
 import {type Comment } from './types';
+import { API_BASE_URL } from "../config/api";
 
 export interface BlogPostDetailData {
   id: number;
@@ -31,7 +32,7 @@ export default function BlogPostDetail() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`http://localhost/blog_api/post/getpost/${postId}`,
+        const response = await fetch(`${API_BASE_URL}/post/getpost/${postId}`,
             {
                 credentials: 'include',
             }
@@ -59,7 +60,7 @@ export default function BlogPostDetail() {
   const handleSave = async() => {
     if (!post) return;
     try{
-      const response = await fetch('http://localhost/blog_api/post/updatesavedpost', {
+      const response = await fetch('${API_BASE_URL}/post/updatesavedpost', {
         method: "POST",
         headers: {'Content-Type' : 'application/json'},
         credentials: 'include',
@@ -90,7 +91,7 @@ export default function BlogPostDetail() {
     setPost({ ...post, likes: nextLikesCount, isLiked: nextIsLiked });
   
     try {
-      const response = await fetch(`http://localhost/blog_api/post/updatepostlike`, {
+      const response = await fetch(`${API_BASE_URL}/post/updatepostlike`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({  

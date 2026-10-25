@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../routes/routes.config';
 import { type ApiError } from './types';
+import { API_BASE_URL } from '../config/api';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -67,7 +68,7 @@ export const UserProfilePage: React.FC = () => {
         try {
           setLoading(true);
           // Replace with your actual backend endpoint
-          const response = await fetch('http://localhost/blog_api/user/getuserprofile',{
+          const response = await fetch(`${API_BASE_URL}/user/getuserprofile`,{
               method: 'GET',
               credentials: 'include',
           });
@@ -127,7 +128,7 @@ export const UserProfilePage: React.FC = () => {
   });
 
     try{
-      const response = await fetch('http://localhost/blog_api/user/updateuserprofile', {
+      const response = await fetch(`${API_BASE_URL}/user/updateuserprofile`, {
           method: 'POST',
           credentials: 'include', 
           body: formData,
@@ -166,7 +167,7 @@ export const UserProfilePage: React.FC = () => {
   // Remove a bookmark from the saved feed list state array
   const handleUnsaveBlog = async (id: number) => {
     try{
-      const response = await fetch('http://localhost/blog_api/public/posts/handle_save_post', {
+      const response = await fetch(`${API_BASE_URL}/public/posts/handle_save_post`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json'},

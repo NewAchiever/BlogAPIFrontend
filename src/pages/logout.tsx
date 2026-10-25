@@ -6,7 +6,7 @@ export default function Logout() {
     const navigate = useNavigate();
     useEffect(() => {
       const logout = async () => {
-          const response = await fetch('http://localhost/blog_api/public/authentication/logout',{
+          const response = await fetch(`${API_BASE_URL}/public/authentication/logout`,{
               method: 'GET',
               credentials: 'include',
           });
