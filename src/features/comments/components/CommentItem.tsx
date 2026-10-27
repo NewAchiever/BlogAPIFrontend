@@ -1,5 +1,5 @@
-import { Heart, Reply, MessageSquare, Send, User, ChevronDown } from 'lucide-react';
-import { type Comment, type commentComponentProps } from './types';
+import { Heart, Reply, Send, User, ChevronDown } from 'lucide-react';
+import { type commentComponentProps } from '../types';
 
 
 

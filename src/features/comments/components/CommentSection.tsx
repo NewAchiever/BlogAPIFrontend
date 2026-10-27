@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Heart, Reply, MessageSquare, Send, User, ChevronDown } from 'lucide-react';
-import { addReply } from './commentUtils';
-import CommentComponent from './commentComponent';
-import { type Comment, type CommentSectionProps } from './types';
-import { API_BASE_URL } from '../config/api';
-export function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
+import { MessageSquare, Send, User } from 'lucide-react';
+import { addReply } from '../utils/commentUtils';
+import CommentComponent from './CommentItem';
+import { type Comment, type CommentSectionProps } from '../types';
+import { API_BASE_URL } from '@/config/api';
+export default function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
   const [authorInput, setAuthorInput] = useState('');
   const [textInput, setTextInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

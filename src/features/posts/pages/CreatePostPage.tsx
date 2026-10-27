@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL } from '@/config/api';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -18,7 +18,7 @@ interface PostFormState {
 // ==========================================
 // COMPONENT
 // ==========================================
-export const CreatePostPage: React.FC = () => {
+export default function CreatePostPage(){
   // Local form state initialized with empty defaults
   const [formData, setFormData] = useState<PostFormState>({
     title: '',

@@ -6,7 +6,7 @@ interface ChangePasswordFormState {
   confirmPassword: string;
 }
 
-export const ChangePasswordPage: React.FC = () => {
+export default function ChangePasswordPage(){
   const [formData, setFormData] = useState<ChangePasswordFormState>({
     currentPassword: '',
     newPassword: '',

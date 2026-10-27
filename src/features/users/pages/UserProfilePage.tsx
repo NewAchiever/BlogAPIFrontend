@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PATHS } from '../routes/routes.config';
-import { type ApiError } from './types';
-import { API_BASE_URL } from '../config/api';
+import { PATHS } from '@/routes/routes.config';
+import { type ApiError } from '@/shared/types';
+import { API_BASE_URL } from '@/config/api';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -31,7 +31,7 @@ interface UserProfileState {
 // ==========================================
 // COMPONENT
 // ==========================================
-export const UserProfilePage: React.FC = () => {
+export default function UserProfilePage() {
   // Mock initial data states
   const [profile, setProfile] = useState<UserProfileState>({
     username: "",

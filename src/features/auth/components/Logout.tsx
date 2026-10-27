@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { API_BASE_URL } from '@/config/api';
 export default function Logout() {
     const navigate = useNavigate();
     useEffect(() => {
