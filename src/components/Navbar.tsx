@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/app/context/AuthContext";
 import { PATHS } from "@/routes/routes.config";
+import { API_BASE_URL } from "@/config/api";
 function Navbar() {
   const { user, isLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       const response = await fetch(
-        "http://localhost/api/logout",
+        `${API_BASE_URL}/blog_api/logout`,
         {
           method: "POST",
           credentials: "include",
