@@ -1,32 +1,5 @@
-// types.ts
 import { type Dispatch,  type SetStateAction } from "react";
 
-
-export interface LoginFormData {
-  email: string;
-  password?: string; // Optional if using passwordless/OTP
-}
-
-export interface SignupFormData {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword?: string; 
-}
-
-export interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    username: string;
-  };
-}
-
-export interface ApiError {
-  message: string;
-  status?: number;
-  errors?: Record<string, string[]>; // For validation errors
-}
 
 export interface Comment {
   id: number;
@@ -63,18 +36,5 @@ export interface commentComponentProps {
     setTextInput: Dispatch<SetStateAction<string>>;
     isSubmitting: boolean;
     setIsSubmitting: Dispatch<SetStateAction<boolean>>;
-
-}
-
-
-export interface Post{
-  id: number;
-  cover_image: string;
-  title: string;
-  author: string;
-  excerpt: string;
-  comments: string;
-  likes: number;
-  isLiked?: boolean;
 
 }

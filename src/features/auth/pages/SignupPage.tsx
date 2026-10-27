@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import type { SignupFormData, ApiError } from './types';
+import type { SignupFormData } from '../types';
+import type { ApiError } from '@/shared/types';
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from '@/config/api';
 
 export default function Signup(){
 

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { PATHS } from "../routes/routes.config";
+import { useAuth } from "@/app/context/AuthContext";
+import { PATHS } from "@/routes/routes.config";
 function Navbar() {
   const { user, isLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();

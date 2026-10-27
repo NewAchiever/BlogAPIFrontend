@@ -1,10 +1,12 @@
-import { PATHS } from '../routes/routes.config';
+import { PATHS } from '@/routes/routes.config';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, User, Loader2 } from 'lucide-react';
-import {type Post} from './types';
-export default function BlogList() {
+import {type Post} from '../types';
+import { API_BASE_URL } from '@/config/api';
+
+export default function PostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

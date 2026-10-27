@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Heart,Bookmark, ArrowLeft, Loader2, User } from 'lucide-react';
-import { PATHS } from '../routes/routes.config';
-import { CommentSection} from './commentSection';
-import {type Comment } from './types';
-import { API_BASE_URL } from "../config/api";
+import { PATHS } from '@/routes/routes.config';
+import CommentSection from '@/features/comments/components/CommentSection';
+import {type Comment } from '@/features/comments/types';
+import { API_BASE_URL } from "@/config/api";
 
 export interface BlogPostDetailData {
   id: number;
@@ -17,7 +17,7 @@ export interface BlogPostDetailData {
   comments: Comment[];
 }
 
-export default function BlogPostDetail() {
+export default function PostDetailPage() {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<BlogPostDetailData | null>(null);
   const [isPostSaved, setIsPostSaved] = useState(false);

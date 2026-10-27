@@ -1,9 +1,10 @@
 import React, { useState, type ChangeEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import type { LoginFormData, LoginResponse, ApiError } from './types';
-import { PATHS } from '../routes/routes.config';
-import { useAuth } from '../context/AuthContext';
-
+import type { LoginFormData, LoginResponse } from '../types';
+import type { ApiError } from '@/shared/types';
+import { PATHS } from '@/routes/routes.config';
+import { useAuth } from '@/app/context/AuthContext';
+import { API_BASE_URL } from '@/config/api';
 export default function Login() {
   const { setUser, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();

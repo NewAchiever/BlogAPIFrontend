@@ -1,19 +1,9 @@
 
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
-
-// Import Layouts & Pages
-//import RootLayout from '../layouts/RootLayout';
-
-import BlogList from '../pages/get_posts';
-import BlogPostDetail from '../pages/blog_post_detail';
-import About from '../pages/about';
-import Login from '../pages/login';
-import Signup from '../pages/signup';
-import Logout from '../pages/logout';
-import { CreatePostPage } from '../pages/createPost';
-import { ChangePasswordPage } from '../pages/changePasswordPage';
-import { UserProfilePage } from '../pages/userProfilePage';
-import AppLayout from '../AppLayout';
+import { PostsListPage, CreatePostPage, PostDetailPage } from '@/features/posts';
+import { LoginPage, SignupPage, ChangePasswordPage, Logout } from '@/features/auth';
+import { UserProfilePage } from '@/features/users';
+import AppLayout from '@/app/AppLayout';
 
 // 1. Centralized Paths
 export interface RoutesConfig {
@@ -38,8 +28,8 @@ export const PATHS: RoutesConfig = {
   CREATE_POST: '/create_post',
   CHANGE_PASSWORD: '/change_password',
   USER_PROFILE_PAGE: '/profile',
-  BLOG: '/get_posts',
-  BLOG_DETAIL: (id: string | number = ':postId'): string => `/get_post/${id}`,
+  BLOG: '/posts',
+  BLOG_DETAIL: (id: string | number = ':postId'): string => `/post/${id}`,
   ABOUT: '/about',
   NOT_FOUND: '*',
 };
@@ -49,16 +39,15 @@ const routes: RouteObject[] = [
   {
     element: <AppLayout/>,
     children: [
-        { path: PATHS.LOGIN, element: <Login /> },
+        { path: PATHS.LOGIN, element: <LoginPage /> },
         { path: PATHS.LOGOUT, element: <Logout /> },
-        { path: PATHS.SIGNUP, element: <Signup /> },
+        { path: PATHS.SIGNUP, element: <SignupPage /> },
         { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
         { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
         { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
-        { path: PATHS.HOME, element: <BlogList /> },
-        { path: PATHS.BLOG, element: <BlogList /> },
-        { path: PATHS.BLOG_DETAIL(), element: <BlogPostDetail /> },
-        { path: PATHS.ABOUT, element: <About /> },
+        { path: PATHS.HOME, element: <PostsListPage /> },
+        { path: PATHS.BLOG, element: <PostsListPage /> },
+        { path: PATHS.BLOG_DETAIL(), element: <PostDetailPage /> },
         { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
       ]
   }
