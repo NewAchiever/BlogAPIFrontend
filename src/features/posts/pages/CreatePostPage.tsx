@@ -199,7 +199,7 @@ export default function CreatePostPage(){
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
                 {formData.coverImage ? (
                   <div className="relative rounded-md overflow-hidden border border-gray-200">
-                    <img src={formData.coverImageTmpPath} alt="Uploaded form banner" className="w-full h-44 object-cover" />
+                    <img src={formData.coverImageTmpPath} crossOrigin="use-credentials" alt="Uploaded form banner" className="w-full h-44 object-cover" />
                     <button
                       type="button"
                       onClick={clearCoverImage}
@@ -302,7 +302,7 @@ export default function CreatePostPage(){
               {/* Layout Presentation Mock Card */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
                 {formData.coverImage ? (
-                  <img src={formData.coverImageTmpPath} alt="Cover preview card mockup" className="w-full h-48 object-cover" />
+                  <img src={formData.coverImageTmpPath} crossOrigin="use-credentials" alt="Cover preview card mockup" className="w-full h-48 object-cover" />
                 ) : (
                   <div className="w-full h-48 bg-gray-100 border-b border-gray-200 flex flex-col items-center justify-center text-gray-400 gap-1">
                     <svg className="w-8 h-8 opacity-60" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">

@@ -207,6 +207,7 @@ export default function UserProfilePage() {
               <div className="relative group">
                 <img 
                   src={profile?.profile_pic_url} 
+                  crossOrigin="use-credentials"
                   alt="User Avatar Profile Banner" 
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200 shadow-sm"
                 />
@@ -364,6 +365,7 @@ export default function UserProfilePage() {
                   <div key={author.id} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm flex flex-col items-center text-center transition-all hover:border-gray-300">
                     <img 
                       src={author.avatarUrl} 
+                      crossOrigin="use-credentials"
                       alt={author.name} 
                       className="w-16 h-16 rounded-full object-cover border border-gray-100 mb-3 shadow-xs"
                     />

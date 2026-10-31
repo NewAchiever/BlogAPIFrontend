@@ -120,6 +120,7 @@ export default function PostsListPage() {
               <div>
                 <img
                   src={post.cover_image}
+                  crossOrigin="use-credentials"
                   alt='coverPic'
                   className='w-32 h-32'
                 />   
