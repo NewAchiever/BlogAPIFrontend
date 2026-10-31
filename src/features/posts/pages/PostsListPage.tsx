@@ -31,7 +31,8 @@ export default function PostsListPage() {
           throw new Error(`Failed to fetch posts: ${response.statusText}`);
         }
 
-        const data: Post[] = await response.json();
+        const data: Post[] = (await response.json()).response;
+        
         setPosts(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
