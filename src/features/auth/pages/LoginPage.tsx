@@ -6,7 +6,7 @@ import { PATHS } from '@/routes/routes.config';
 import { useAuth } from '@/app/context/AuthContext';
 import { API_BASE_URL } from '@/config/api';
 export default function Login() {
-  const { setUser, setIsLoggedIn } = useAuth();
+  const { setUser, setIsLoggedIn, callAPI } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 

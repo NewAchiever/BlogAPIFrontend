@@ -1,21 +1,22 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '@/config/api';
+import { useAuth } from '@/app/context/AuthContext';
 export default function Logout() {
     const navigate = useNavigate();
+    const { callAPI } = useAuth();
     useEffect(() => {
       const logout = async () => {
-          const response = await fetch(`${API_BASE_URL}/public/authentication/logout`,{
+          const response = await callAPI(`/auth/logout`,{
               method: 'GET',
               credentials: 'include',
           });
-          if(response.status === 200 || response.status === 401){
+          console.log("response logout", response);
+          if(!response){
             navigate('/login');
           }
-          else{
-            navigate(-1);
-          }
+
+          
       };
       logout();
     }, []);

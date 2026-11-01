@@ -1,22 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/app/context/AuthContext";
 import { PATHS } from "@/routes/routes.config";
-import { API_BASE_URL } from "@/config/api";
 function Navbar() {
-  const { user, isLoggedIn, setUser } = useAuth();
+  const { user, isLoggedIn, setUser, callAPI } = useAuth();
   const navigate = useNavigate();
-  console.log("logged", isLoggedIn);
   const handleLogout = async () => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/blog_api/logout`,
+      const response = await callAPI('/auth/logout',
         {
           method: "POST",
           credentials: "include",
         }
       );
 
-      if (response.ok) {
+      if (!response) {
         setUser(null);
         navigate(PATHS.LOGIN, {replace: true});
       }
@@ -24,7 +21,7 @@ function Navbar() {
       console.error("Logout failed:", error);
     }
   };
-
+  console.log("change in ", isLoggedIn);
   return (
     <nav className="w-full h-[50px] bg-stone-700 text-gray-300">
       <div className="flex flex-row items-center h-full justify-between mx-5">

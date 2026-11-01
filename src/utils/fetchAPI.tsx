@@ -1,13 +1,35 @@
 
-export async function fetchAPI(urlEndPoint:string, options: RequestInit = {}) {
-    
-    const response:any = fetch(urlEndPoint, {
-        ...options,
-        credentials: "include"
-    })
-    if(response.status === 401){
-        window.location.href = '/login';
-        return null;
+import { API_BASE_URL } from '@/config/api';
+export const fetchAPI = async(
+urlEndPoint: string, 
+options: RequestInit = {},
+err: string,
+setIsLoggedIn:(isLoggedIn: boolean | null) => void
+) => {
+    try{
+        const responseAPI = await fetch(`${API_BASE_URL}${urlEndPoint}`, {
+            ...options,
+            credentials: "include"
+        })
+
+        const response = await responseAPI.json();
+        
+
+        console.log("INSIDE FETCHAPPI", response);
+        if (response.isSessionActive === false) {
+            setIsLoggedIn(false);
+            return null;
+        } else if (response.isSessionActive === true) {
+            setIsLoggedIn(true);
+        }
+
+        return response.data;
+
     }
-    return response;
+    catch(error){
+        console.log(err, error);
+        throw error;
+    }
+        
+
 }

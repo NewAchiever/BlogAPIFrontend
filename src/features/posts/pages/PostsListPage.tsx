@@ -4,35 +4,28 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, User, Loader2 } from 'lucide-react';
 import {type Post} from '../types';
-import { API_BASE_URL } from '@/config/api';
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function PostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-    // 2. Fetch data from backend on mount
+  
+  const { callAPI, setIsLoggedIn } = useAuth(); 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        // Replace with your actual backend endpoint
-        const response = await fetch(`${API_BASE_URL}/post/getallpost`,{
+
+        const response = await callAPI('/post/getallpost',{
             method: 'GET',
             credentials: 'include',
         });
 
-        if (response.status === 401) {
-            navigate(PATHS.LOGIN, {replace: true});
-            return;
-        }
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch posts: ${response.statusText}`);
-        }
 
-        const data: Post[] = (await response.json()).response;
-        
+        const data: Post[] = response;
+        console.log("dada",response);
         setPosts(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
