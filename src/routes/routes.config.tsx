@@ -1,9 +1,10 @@
 
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
-import { PostsListPage, CreatePostPage, PostDetailPage } from '@/features/posts';
+import { PostsListPage, CreatePostPage, PostDetailPage, SavedDraftsListPage } from '@/features/posts';
 import { LoginPage, SignupPage, ChangePasswordPage, Logout } from '@/features/auth';
 import { UserProfilePage } from '@/features/users';
 import AppLayout from '@/app/AppLayout';
+import EditDraftPage from '@/features/posts/pages/EditDraftPage';
 
 // 1. Centralized Paths
 export interface RoutesConfig {
@@ -15,6 +16,8 @@ export interface RoutesConfig {
   CHANGE_PASSWORD: string;
   USER_PROFILE_PAGE: string;
   BLOG: string;
+  DRAFTS: string;
+  DRAFT_DETAIL: (id?: string | number) => string;
   BLOG_DETAIL: (id?: string | number) => string;
   ABOUT: string;
   NOT_FOUND: string;
@@ -29,6 +32,8 @@ export const PATHS: RoutesConfig = {
   CHANGE_PASSWORD: '/change_password',
   USER_PROFILE_PAGE: '/profile',
   BLOG: '/posts',
+  DRAFTS: '/drafts',
+  DRAFT_DETAIL: (id: string | number = ':postId'): string => `/draft/${id}`,
   BLOG_DETAIL: (id: string | number = ':postId'): string => `/post/${id}`,
   ABOUT: '/about',
   NOT_FOUND: '*',
@@ -47,6 +52,8 @@ const routes: RouteObject[] = [
         { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
         { path: PATHS.HOME, element: <PostsListPage /> },
         { path: PATHS.BLOG, element: <PostsListPage /> },
+        { path: PATHS.DRAFTS, element: <SavedDraftsListPage /> },
+        { path: PATHS.DRAFT_DETAIL(), element: <EditDraftPage /> },
         { path: PATHS.BLOG_DETAIL(), element: <PostDetailPage /> },
         { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
       ]

@@ -5,7 +5,7 @@ export interface Comment {
   id: number;
   author: string;
   comment: string;
-  createdAt: string;
+  created_at: string;
   likes: number;
   isLiked?: boolean;
   comments: Comment[];

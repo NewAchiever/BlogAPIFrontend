@@ -1,35 +1,47 @@
 
 import { API_BASE_URL } from '@/config/api';
-export const fetchAPI = async(
+import type { ApiResponse } from '@/shared/types';
+export const fetchAPI = async <T,>(
 urlEndPoint: string, 
 options: RequestInit = {},
 err: string,
 setIsLoggedIn:(isLoggedIn: boolean | null) => void
-) => {
+): Promise<ApiResponse<T>> => {
     try{
         const responseAPI = await fetch(`${API_BASE_URL}${urlEndPoint}`, {
             ...options,
             credentials: "include"
-        })
+        });
 
         const response = await responseAPI.json();
+        const isSessionActive = response.isSessionActive;
         
 
         console.log("INSIDE FETCHAPPI", response);
         if (response.isSessionActive === false) {
             setIsLoggedIn(false);
-            return null;
         } else if (response.isSessionActive === true) {
             setIsLoggedIn(true);
         }
-
-        return response.data;
+        const success = responseAPI.ok;
+        return {
+            success: success,
+            data: response.data,
+            error: null,
+            status: responseAPI.status,
+            isSessionActive: isSessionActive
+        };
 
     }
     catch(error){
-        console.log(err, error);
-        throw error;
+        return {
+            success: false,
+            data: null,
+            error: true,
+            status: 0,
+            isSessionActive: null
+        };
     }
-        
+     
 
 }

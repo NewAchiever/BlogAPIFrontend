@@ -7,7 +7,7 @@ export const addReply = (
   ): Comment[] => {
     
     return comments.map((comment) => {
-      // We found the parent
+      // Find parent
       if (comment.id === parentId) {
          return {
             ...comment,
@@ -16,13 +16,13 @@ export const addReply = (
       }
 
       // Search inside this comment's replies
-      if (comment.replies?.length > 0) {
+      else if (comment.replies?.length > 0) {
         return {
           ...comment,
           replies: addReply(comment.replies, parentId, newReply),
         };
       }
-
+      
       return comment;
     });
   };

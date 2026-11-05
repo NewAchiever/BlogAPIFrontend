@@ -13,7 +13,7 @@ function Navbar() {
         }
       );
 
-      if (!response) {
+      if (!response.isSessionActive) {
         setUser(null);
         navigate(PATHS.LOGIN, {replace: true});
       }
@@ -21,7 +21,7 @@ function Navbar() {
       console.error("Logout failed:", error);
     }
   };
-  console.log("change in ", isLoggedIn);
+  
   return (
     <nav className="w-full h-[50px] bg-stone-700 text-gray-300">
       <div className="flex flex-row items-center h-full justify-between mx-5">
@@ -31,6 +31,9 @@ function Navbar() {
         <div className="flex flex-row gap-4">
             {isLoggedIn ? (
                 <>
+                    <div>
+                        <Link to="/drafts">Drafts</Link>
+                    </div>
                     <div>
                         <Link to="/profile">Profile</Link>
                     </div>

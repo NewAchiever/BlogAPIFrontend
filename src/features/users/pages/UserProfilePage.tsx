@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PATHS } from '@/routes/routes.config';
 import { type ApiError } from '@/shared/types';
 import { API_BASE_URL } from '@/config/api';
+import { useAuth } from '@/app/context/AuthContext';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -24,42 +25,33 @@ interface FollowedAuthor {
 interface UserProfileState {
   username: string;
   email: string;
-  profile_pic: File | undefined;
-  profile_pic_url: string;
+  profile_pic: string;
+  profile_pic_file: File | undefined;
 }
 
 // ==========================================
 // COMPONENT
 // ==========================================
 export default function UserProfilePage() {
-  // Mock initial data states
+  const { callAPI } = useAuth();
   const [profile, setProfile] = useState<UserProfileState>({
     username: "",
     email: "",
-    profile_pic: undefined,
-    profile_pic_url: ""
+    profile_pic: "",
+    profile_pic_file: undefined
   });
-
   const [savedBlogs, setSavedBlogs] = useState<SavedBlog[]>([]);
-
-  const [followedAuthors, setFollowedAuthors] = useState<FollowedAuthor[]>([
-    { id: 'a1', name: 'Sarah Connor', handle: '@sconnor_codes', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=128&q=80' },
-    { id: 'a2', name: 'John Doe', handle: '@johndoe_dev', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=128&q=80' },
-    { id: 'a3', name: 'Emily Watson', handle: '@emily_ui', avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=128&q=80' },
-  ]);
-
-  // Form edit states
+  const [followedAuthors, setFollowedAuthors] = useState<FollowedAuthor[]>();
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
   const [editForm, setEditForm] = useState<UserProfileState>({
     username: "",
     email: "",
-    profile_pic: undefined,
-    profile_pic_url: ""
+    profile_pic: "",
+    profile_pic_file: undefined
   });
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  // Active sub-tab state ('saved' | 'authors')
   const [activeTab, setActiveTab] = useState<'saved' | 'authors'>('saved');
   const navigate = useNavigate();
   // Loading User profile
@@ -67,21 +59,21 @@ export default function UserProfilePage() {
       const fetchUserProfile = async () => {
         try {
           setLoading(true);
-          // Replace with your actual backend endpoint
-          const response = await fetch(`${API_BASE_URL}/user/getuserprofile`,{
+          
+          const response = await callAPI('/user/getuserprofile',{
               method: 'GET',
               credentials: 'include',
           });
   
-          if (response.status === 401) {
+          if (! response.isSessionActive) {
               navigate(PATHS.LOGIN, {replace: true});
               return;
           }
   
-          if (!response.ok) {
+          if (!response.success) {
             throw new Error(`Failed to fetch posts: ${response.statusText}`);
           }
-          const data: any = await response.json();
+          const data = response.data;
           setProfile(data.user);
           setSavedBlogs(data.savedPosts)
         } catch (err) {
@@ -105,8 +97,8 @@ export default function UserProfilePage() {
     const file = e.target.files?.[0];
     if (file) {
       const localUrl = URL.createObjectURL(file);
-      setProfile((prev:UserProfileState) => ({ ...prev, profile_pic: file, profile_pic_url: localUrl }));
-      setEditForm((prev:UserProfileState) => ({ ...prev, profile_pic: file, profile_pic_url: localUrl }));
+      setProfile((prev:UserProfileState) => ({ ...prev, profile_pic: localUrl, profile_pic_file: file }));
+      setEditForm((prev:UserProfileState) => ({ ...prev, profile_pic: localUrl, profile_pic_file: file }));
     }
   };
 
@@ -118,7 +110,7 @@ export default function UserProfilePage() {
     
     Object.entries(editForm).forEach(([key, value]) => {
       if (value instanceof File) {
-          formData.append(key, value);
+          formData.append("profile_pic", value);
       } else {
           if(profile?.[key as keyof typeof profile] !== value && String(value ?? "").trim() !== ""){
             formData.append(key, String(value));
@@ -128,22 +120,18 @@ export default function UserProfilePage() {
   });
 
     try{
-      const response = await fetch(`${API_BASE_URL}/user/updateuserprofile`, {
+      const response = await callAPI('/user/updateuserprofile', {
           method: 'POST',
           credentials: 'include', 
           body: formData,
         });
-      if(response.status === 200){
-        //navigate(0);
-        console.log(response.json()) ;
-      }
-      if (! (response.status === 200)) {
-        const errorData: ApiError = await response.json();
-        throw new Error(errorData.message || 'Authentication failed');
+      
+      if (! response.success) {
+        throw new Error('Authentication failed');
       }
        
 
-      const profile: UserProfileState = await response.json();
+      const profile: UserProfileState = response.data.user;
 
       setTimeout(() => {
 
@@ -167,7 +155,7 @@ export default function UserProfilePage() {
   // Remove a bookmark from the saved feed list state array
   const handleUnsaveBlog = async (id: number) => {
     try{
-      const response = await fetch(`${API_BASE_URL}/public/posts/handle_save_post`, {
+      const response = await callAPI('/public/posts/handle_save_post', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json'},
@@ -176,7 +164,7 @@ export default function UserProfilePage() {
             isSaved: false
         })
       })
-      if(response.status === 200){
+      if(response.success){
         setSavedBlogs((prev) => prev.filter((blog) => blog.id !== id));
       }else{
         throw new Error('Failed to update save post.');
@@ -191,7 +179,7 @@ export default function UserProfilePage() {
 
   // Sever connection following with a creator
   const handleUnfollowAuthor = (id: string) => {
-    setFollowedAuthors((prev) => prev.filter((author) => author.id !== id));
+    setFollowedAuthors((prev) => prev?.filter((author) => author.id !== id));
   };
 
   return (
@@ -206,7 +194,7 @@ export default function UserProfilePage() {
             <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left w-full">
               <div className="relative group">
                 <img 
-                  src={profile?.profile_pic_url} 
+                  src={profile?.profile_pic || undefined} 
                   crossOrigin="use-credentials"
                   alt="User Avatar Profile Banner" 
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200 shadow-sm"
@@ -272,8 +260,8 @@ export default function UserProfilePage() {
                     <h1 className="text-2xl font-bold text-gray-900">@{profile?.username}</h1>
                     <p className="text-gray-500 text-sm mt-0.5">{profile?.email}</p>
                     <div className="flex flex-wrap gap-4 mt-4 justify-center sm:justify-start text-xs text-gray-500">
-                      <span>📚 **{savedBlogs.length}** Saved Articles</span>
-                      <span>👥 **{followedAuthors.length}** Following</span>
+                      <span>📚 **{savedBlogs?.length}** Saved Articles</span>
+                      <span>👥 **{followedAuthors?.length}** Following</span>
                     </div>
                   </div>
                 )}
@@ -323,7 +311,7 @@ export default function UserProfilePage() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            Followed Authors ({followedAuthors.length})
+            Followed Authors ({followedAuthors?.length})
           </button>
         </div>
 
@@ -360,11 +348,11 @@ export default function UserProfilePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {followedAuthors.length > 0 ? (
-                followedAuthors.map((author) => (
+              {(followedAuthors ?? []).length > 0 ? (
+                followedAuthors?.map((author) => (
                   <div key={author.id} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm flex flex-col items-center text-center transition-all hover:border-gray-300">
                     <img 
-                      src={author.avatarUrl} 
+                      src={author.avatarUrl || undefined} 
                       crossOrigin="use-credentials"
                       alt={author.name} 
                       className="w-16 h-16 rounded-full object-cover border border-gray-100 mb-3 shadow-xs"

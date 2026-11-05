@@ -36,28 +36,31 @@ export default function Login() {
     setIsLoading(true);
 
     try {      
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await callAPI('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', 
         body: JSON.stringify(formData),
       });
       
-      if (!response.ok) {
-        const errorData: ApiError = await response.json();
-        throw new Error(errorData.message || 'Authentication failed');
+      if(! response.isSessionActive){
+        setUser(null);
+        navigate('/login');
       }
 
-      const data: LoginResponse = await response.json();
-      
+      if (response.error) {
+        throw new Error('Authentication failed');
+      }
+
+      const data: LoginResponse = response.data;
+      setUser(data.user);
+      setIsLoggedIn(true);
 
       
       // Save your authentication token (JWT) safely
       localStorage.setItem('token', data.token);
-      setUser(data.user);
-      setIsLoggedIn(true);
+      
       // Redirect or update application auth state here
-      //window.location.href = "http://localhost:5173/get_posts";
       navigate(PATHS.BLOG, { replace: true });
     } catch (err) {
       if (err instanceof Error) {

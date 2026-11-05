@@ -3,7 +3,7 @@ import { type commentComponentProps } from '../types';
 
 
 
-export default function CommentComponent({ 
+export default function CommentItem({ 
     depth,
     comment,
     updateComment,
@@ -29,7 +29,7 @@ export default function CommentComponent({
                   <span className="font-semibold text-slate-800 text-sm">{comment.author}</span>
                 </div>
                 <span className="text-xs text-slate-400">
-                  {new Date(comment.createdAt).toLocaleDateString()}
+                  {new Date(comment.created_at).toLocaleDateString()}
                 </span>
               </div>
               <p className="text-slate-600 text-sm pl-2 text-left leading-relaxed">{comment.comment}</p>
@@ -104,7 +104,8 @@ export default function CommentComponent({
             )}
             <div className="space-y-4">
               {comment.showReplies && comment.replies?.map(reply => (
-                <CommentComponent
+                <CommentItem
+                  key={comment.id}
                   depth={4}
                   comment={reply}
                   setComments={setComments}

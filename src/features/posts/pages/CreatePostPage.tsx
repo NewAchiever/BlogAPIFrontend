@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { API_BASE_URL } from '@/config/api';
+import { useAuth } from '@/app/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -19,7 +21,9 @@ interface PostFormState {
 // COMPONENT
 // ==========================================
 export default function CreatePostPage(){
-  // Local form state initialized with empty defaults
+  const { callAPI, setUser } = useAuth();
+  const  navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<PostFormState>({
     title: '',
     slug: '',
@@ -87,30 +91,43 @@ export default function CreatePostPage(){
     const blogData = new FormData(e.currentTarget);
 
     Object.entries(formData).forEach(([key, value]) => {
-      if (value instanceof File) {
-          blogData.append(key, value);
-      } else {
-          blogData.append(key, String(value));
-      }
-  });
-    const response = await fetch(`${API_BASE_URL}/post/createpost`,{
-      method: 'POST',
-      credentials: 'include',
-      body: blogData
+        if (value instanceof File) {
+            blogData.append(key, value);
+        }else if (typeof value === "boolean") {
+          blogData.append(key, value ? "1" : "0");
+        }
+         else {
+            blogData.append(key, String(value));
+        }
     });
+    
+    try{
+      const response = await callAPI('/post/createpost',{
+        method: 'POST',
+        credentials: 'include',
+        body: blogData
+      });
 
-    if(response.status === 200){
-      console.log("Post Created");
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+
+      if(!response.success){
+        throw new Error("Something went wrong.");
+      }
+      
+      
+      setTimeout(() => {
+        console.log('Successfully Compiled Blog Post Data Object Payload:', formData);
+        //alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
+        setIsSubmitting(false);
+      }, 1000);
     }
-    else{
-      console.log(response);
+    catch(error){
+      setError(error instanceof Error? error.message : "Something went wrong");
     }
-    // Mock an external server latency window
-    setTimeout(() => {
-      console.log('Successfully Compiled Blog Post Data Object Payload:', formData);
-      //alert(formData.isPublished ? '🎉 Post published successfully!' : '💾 Draft saved successfully!');
-      setIsSubmitting(false);
-    }, 1000);
+    
   };
 
   return (
@@ -199,7 +216,7 @@ export default function CreatePostPage(){
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
                 {formData.coverImage ? (
                   <div className="relative rounded-md overflow-hidden border border-gray-200">
-                    <img src={formData.coverImageTmpPath} crossOrigin="use-credentials" alt="Uploaded form banner" className="w-full h-44 object-cover" />
+                    <img src={formData.coverImageTmpPath || undefined} crossOrigin="use-credentials" alt="Uploaded form banner" className="w-full h-44 object-cover" />
                     <button
                       type="button"
                       onClick={clearCoverImage}
@@ -302,7 +319,7 @@ export default function CreatePostPage(){
               {/* Layout Presentation Mock Card */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
                 {formData.coverImage ? (
-                  <img src={formData.coverImageTmpPath} crossOrigin="use-credentials" alt="Cover preview card mockup" className="w-full h-48 object-cover" />
+                  <img src={formData.coverImageTmpPath || undefined} crossOrigin="use-credentials" alt="Cover preview card mockup" className="w-full h-48 object-cover" />
                 ) : (
                   <div className="w-full h-48 bg-gray-100 border-b border-gray-200 flex flex-col items-center justify-center text-gray-400 gap-1">
                     <svg className="w-8 h-8 opacity-60" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">

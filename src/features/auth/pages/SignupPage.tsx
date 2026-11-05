@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { SignupFormData } from '../types';
 import type { ApiError } from '@/shared/types';
-import { Link } from "react-router-dom";
-import { API_BASE_URL } from '@/config/api';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function Signup(){
 
@@ -12,10 +12,16 @@ email: '',
 password: '',
 confirmPassword: '',
 });
-
+const { setUser, setIsLoggedIn, isLoggedIn, callAPI  } = useAuth();
 const [error, setError] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
 const [success, setSuccess] = useState(false);
+const navigate = useNavigate();
+useEffect(() => {
+  if(isLoggedIn){
+    navigate('/');
+  }
+}, [])
 
 // Handle typing inputs safely
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -40,28 +46,24 @@ setLoading(true);
 
 try {
 
-const response = await fetch(`${API_BASE_URL}/public/authentication/add_user`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify({
-username: formData.username,
-email: formData.email,
-password: formData.password,
-}),
+const response = await callAPI('/auth/signup', {
+  method: 'POST',
+  headers: {
+  'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+  username: formData.username,
+  email: formData.email,
+  password: formData.password,
+  }),
 });
 
-const data = await response.json();
 
-if (!response.ok) {
-// Cast backend error to our custom ApiError interface
-const apiError = data as ApiError;
-throw new Error(apiError.message || 'Something went wrong during signup.');
+if(!response.success){
+  throw new Error('Something went wrong during signup.');
 }
-
-// Success: Save token if your backend sends one (e.g., localStorage.setItem('token', data.token))
 setSuccess(true);
+
 } catch (err: any) {
 setError(err.message || 'Failed to connect to server.');
 } finally {
@@ -77,9 +79,10 @@ if(success){
         <div style={styles.successIcon}>✓</div>
         <h2 style={styles.title}>Account Created!</h2>
         <p style={styles.subtitle}>Welcome aboard! Your registration was successful...</p>
-        <button style={styles.primaryButton} onClick={() => window.location.href = '/login'}>
-          <Link to='/login'>Login</Link>
-        </button>
+        <Link to='/login'><button style={styles.primaryButton}>
+          Login
+        </button></Link>
+        
       </div>
     </div>
 }

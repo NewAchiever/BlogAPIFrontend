@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { MessageSquare, Send, User } from 'lucide-react';
 import { addReply } from '../utils/commentUtils';
-import CommentComponent from './CommentItem';
+import CommentItem from './CommentItem';
 import { type Comment, type CommentSectionProps } from '../types';
 import { API_BASE_URL } from '@/config/api';
+import { useAuth } from '@/app/context/AuthContext';
+
 export default function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
+  const { callAPI } = useAuth();
   const [authorInput, setAuthorInput] = useState('');
   const [textInput, setTextInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +24,7 @@ export default function CommentSection({ postId, commentsFromDB, onAddComment }:
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!textInput.trim()) return;
-    console.log("Clciked");
+    
 
     setIsSubmitting(true);
 
@@ -29,20 +32,20 @@ export default function CommentSection({ postId, commentsFromDB, onAddComment }:
       comment: textInput.trim(),
       postId: postId,
     };
-    console.log(commentPayload);
+
     try {
       // API call to save comment
-      const response = await fetch(`${API_BASE_URL}/comment/addcomment`, {
+      const response = await callAPI('/comment/addcomment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentPayload),
       });
-
-      if (!response.ok) {
+      
+      if (!response.success) {
         throw new Error('Failed to post comment');
       }
-      console.log(response);
-      const createdComment: Comment = await response.json();
+
+      const createdComment: Comment = response.data;
       onAddComment(createdComment);
 
       // Reset form
@@ -67,7 +70,7 @@ const updateComment = (
   ): Comment[] => {
     
     return comments.map(comment => {
-      // Found the comment
+
       if (comment.id === commentId) {
         return {
           ...comment,
@@ -124,7 +127,7 @@ const updateComment = (
 
        
     try {
-      const response = await fetch(`${API_BASE_URL}/comment/updatecommentlike`, {
+      const response = await callAPI('/comment/updatecommentlike', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -133,16 +136,7 @@ const updateComment = (
         }),
         credentials: 'include'
       });
-      // Immediate UI change
-      /*
-      setComments(prev => 
-        prev.map(comment => 
-          comment.id === commentId
-            ? { ...comment, likes: nextLikesCount, isLiked: nextIsLiked }
-            : comment
-        )
-      )
-      */
+      
       setComments(prev =>
         updateComment(prev, commentId, {
           likes: nextLikesCount,
@@ -150,7 +144,7 @@ const updateComment = (
         })
       );
 
-      if (!response.ok) {
+      if (!response.success) {
         throw new Error('Failed to update like status');
       }
     } catch (err) {
@@ -183,7 +177,7 @@ const updateComment = (
     if (typeof replyValue !== "string") return;
     const parentCommentId = commentId;
     try {
-      const response = await fetch(`${API_BASE_URL}/comment/addcomment`, {
+      const response = await callAPI('/comment/addcomment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -193,30 +187,27 @@ const updateComment = (
         }),
         credentials: 'include'
       });
-      
-      const data: Comment = await response.json();
+      if(!response.success){
+        throw Error("Something went wrong.");
+      }
+      comment.showReplyForm = false;
+      const data: Comment = response.data;
+      console.log("comment: ", data);
       const newReply: Comment = {
-        id: data.id, // Prefer the ID returned by your backend
-        author: data.author, // Your current user's username
-        comment: replyValue.trim(),
-        createdAt: new Date().toISOString(),
-        likes: 0,
-        comments: [],
+        
+        ...data,
         isEditing: false,
         showReplies: false,
         showReplyForm: false,
         replies: [],
         total_replies: 0,
       };
-      
+      console.log("P_id", parentCommentId);
       setComments((prevComments) => addReply(prevComments, parentCommentId, newReply));
 
-      if (!response.ok) {
-        throw new Error('Failed to update like status');
-      }
     } catch (err) {
       console.error(err);
-      // Revert state if backend request fails      
+
     }
   };
 
@@ -224,7 +215,7 @@ const updateComment = (
     
     const comment = findComment(comments, commentId);
     if (!comment) return;
-    console.log(comment.showReplies);
+
     if(comment.showReplies){
       setComments(prev =>
         updateComment(prev, commentId, {
@@ -235,7 +226,7 @@ const updateComment = (
     }
        
     try {
-      const response = await fetch(`${API_BASE_URL}/comment/getmorereply`, {
+      const response = await callAPI('/comment/getmorereply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -243,8 +234,10 @@ const updateComment = (
         }),
         credentials: 'include'
       });
-
-      const data: Comment[] = await response.json();
+      if(! response.success){
+        throw Error("Failed to fetch comments.");
+      }
+      const data: Comment[] = response.data;
       
       // Immediate UI change
 
@@ -254,11 +247,6 @@ const updateComment = (
         })
       );
       
-      console.log(comments);
-      
-      if (!response.ok) {
-        throw new Error('Failed to update like status');
-      }
     } catch (err) {
       console.error(err);
     }
@@ -312,7 +300,8 @@ const updateComment = (
           <p className="text-slate-500 italic text-sm">No comments yet. Be the first to share your thoughts!</p>
         ) : (
           comments.map((comment) => (
-            <CommentComponent
+            <CommentItem
+              key={comment.id}
               depth={depth}
               comment={comment}
               setComments={setComments}

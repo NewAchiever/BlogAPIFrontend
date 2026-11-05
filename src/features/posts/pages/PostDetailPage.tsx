@@ -5,7 +5,7 @@ import { PATHS } from '@/routes/routes.config';
 import CommentSection from '@/features/comments/components/CommentSection';
 import {type Comment } from '@/features/comments/types';
 import { API_BASE_URL } from "@/config/api";
-
+import { useAuth } from '@/app/context/AuthContext';
 export interface BlogPostDetailData {
   id: number;
   title: string;
@@ -23,7 +23,7 @@ export default function PostDetailPage() {
   const [isPostSaved, setIsPostSaved] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { callAPI } = useAuth();
   // 1. Fetch post details and comments from API
   useEffect(() => {
     const fetchPostDetail = async () => {
@@ -32,18 +32,18 @@ export default function PostDetailPage() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/post/getpost/${postId}`,
+        const response = await callAPI(`/post/getpost/${postId}`,
             {
                 credentials: 'include',
             }
         );
-        if (!response.ok) {
-          throw new Error(`Failed to load post (${response.status})`);
+        if (!response.success) {
+          throw new Error(`Failed to load post.`);
         }
-
-        const data: BlogPostDetailData = await response.json();
+        console.log("RESPONSE", response);
+        const data: BlogPostDetailData = response.data;
         setPost(data);
-        console.log(data);  
+        
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred while loading post');
       } finally {
@@ -60,7 +60,7 @@ export default function PostDetailPage() {
   const handleSave = async() => {
     if (!post) return;
     try{
-      const response = await fetch('${API_BASE_URL}/post/updatesavedpost', {
+      const response = await callAPI('/post/updatesavedpost', {
         method: "POST",
         headers: {'Content-Type' : 'application/json'},
         credentials: 'include',
@@ -69,13 +69,13 @@ export default function PostDetailPage() {
           isSaved: !post.isSaved
         })
       });
-      if(response.status === 200){
+      if(response.success){
         setPost({...post, isSaved: !post.isSaved}); 
       }else{
         throw new Error('Failed to update save post.');
       }
     }catch(err){
-      console.log(err);
+      setError(err instanceof Error ? err.message : "Something went wrong");
     }
     
   }
@@ -91,7 +91,7 @@ export default function PostDetailPage() {
     setPost({ ...post, likes: nextLikesCount, isLiked: nextIsLiked });
   
     try {
-      const response = await fetch(`${API_BASE_URL}/post/updatepostlike`, {
+      const response = await callAPI('/post/updatepostlike', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({  
@@ -100,12 +100,11 @@ export default function PostDetailPage() {
         }),
         credentials: 'include'
       });
-      if (!response.ok) {
+      if (!response.success) {
         throw new Error('Failed to update like status');
       }
     } catch (err) {
-      console.error(err);
-      // Revert state if backend request fails
+      setError(err instanceof Error ? err.message : "Something went wrong");
       setPost({ ...post, likes: post.likes, isLiked: post.isLiked });
     }
   };

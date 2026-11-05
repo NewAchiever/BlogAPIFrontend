@@ -12,7 +12,7 @@ export default function Logout() {
               credentials: 'include',
           });
           console.log("response logout", response);
-          if(!response){
+          if(!response.isSessionActive){
             navigate('/login');
           }
 

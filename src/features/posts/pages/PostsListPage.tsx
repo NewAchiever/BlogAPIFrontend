@@ -23,9 +23,8 @@ export default function PostsListPage() {
         });
 
 
-
-        const data: Post[] = response;
-        console.log("dada",response);
+        const data: Post[] = response.data;
+        
         setPosts(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -50,32 +49,7 @@ export default function PostsListPage() {
         post.id === id ? { ...post, likes: nextLikesCount, isLiked: nextIsLiked } : post
       )
     );
-/*
-    try {
-      // Sync update with backend
-      const response = await fetch(`${API_BASE_URL}/public/posts/get_post`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isLiked: nextIsLiked }),
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to update like status');
-      }
-    } catch (err) {
-      // Revert optimistic update if API call fails
-      console.error(err);
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.id === id
-            ? { ...post, likes: targetPost.likes, isLiked: targetPost.isLiked }
-            : post
-        )
-      );
-    }
-
-
-    */
   };
 
   // 4. Render Loading State
@@ -113,7 +87,7 @@ export default function PostsListPage() {
             >
               <div>
                 <img
-                  src={post.cover_image}
+                  src={post.cover_image || undefined}
                   crossOrigin="use-credentials"
                   alt='coverPic'
                   className='w-32 h-32'
