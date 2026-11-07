@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Heart,Bookmark, ArrowLeft, Loader2, User } from 'lucide-react';
 import { PATHS } from '@/routes/routes.config';
 import CommentSection from '@/features/comments/components/CommentSection';
@@ -23,7 +23,8 @@ export default function PostDetailPage() {
   const [isPostSaved, setIsPostSaved] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { callAPI } = useAuth();
+  const { callAPI, setUser } = useAuth();
+  const navigate = useNavigate();
   // 1. Fetch post details and comments from API
   useEffect(() => {
     const fetchPostDetail = async () => {
@@ -37,6 +38,12 @@ export default function PostDetailPage() {
                 credentials: 'include',
             }
         );
+        
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
         if (!response.success) {
           throw new Error(`Failed to load post.`);
         }
@@ -69,6 +76,12 @@ export default function PostDetailPage() {
           isSaved: !post.isSaved
         })
       });
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
       if(response.success){
         setPost({...post, isSaved: !post.isSaved}); 
       }else{
@@ -100,6 +113,12 @@ export default function PostDetailPage() {
         }),
         credentials: 'include'
       });
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
       if (!response.success) {
         throw new Error('Failed to update like status');
       }

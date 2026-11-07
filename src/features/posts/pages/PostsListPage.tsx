@@ -10,8 +10,8 @@ export default function PostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const { callAPI, setIsLoggedIn } = useAuth(); 
+  const navigate = useNavigate();
+  const { callAPI, setUser, setIsLoggedIn } = useAuth(); 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -22,7 +22,14 @@ export default function PostsListPage() {
             credentials: 'include',
         });
 
+        if(!response.isSessionActive){
+          setUser(null);
+          navigate('/login');
+        }
 
+        if(!response.error){
+          throw new Error('Failed to fetch posts.');
+        }
         const data: Post[] = response.data;
         
         setPosts(data);

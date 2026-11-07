@@ -5,9 +5,10 @@ import CommentItem from './CommentItem';
 import { type Comment, type CommentSectionProps } from '../types';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
-  const { callAPI } = useAuth();
+  const { callAPI, setUser } = useAuth();
   const [authorInput, setAuthorInput] = useState('');
   const [textInput, setTextInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,6 +19,7 @@ export default function CommentSection({ postId, commentsFromDB, onAddComment }:
       showReplyForm: false,
       replies: []
     })));
+  const navigate = useNavigate();
     
   const depth = 0;
   
@@ -40,6 +42,11 @@ export default function CommentSection({ postId, commentsFromDB, onAddComment }:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(commentPayload),
       });
+
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
       
       if (!response.success) {
         throw new Error('Failed to post comment');
@@ -143,8 +150,13 @@ const updateComment = (
           isLiked: nextIsLiked,
         })
       );
-
-      if (!response.success) {
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
+      if (!response.error) {
         throw new Error('Failed to update like status');
       }
     } catch (err) {
@@ -186,6 +198,12 @@ const updateComment = (
         }),
         credentials: 'include'
       });
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
       if(!response.success){
         throw Error("Something went wrong.");
       }
@@ -233,9 +251,17 @@ const updateComment = (
         }),
         credentials: 'include'
       });
+      
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
       if(! response.success){
         throw Error("Failed to fetch comments.");
       }
+
       const data: Comment[] = response.data?.map((comment : Comment) => (
         {
           ...comment, 

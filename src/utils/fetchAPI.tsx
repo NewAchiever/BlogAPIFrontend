@@ -1,4 +1,3 @@
-
 import { API_BASE_URL } from '@/config/api';
 import type { ApiResponse } from '@/shared/types';
 export const fetchAPI = async <T,>(

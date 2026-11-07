@@ -10,8 +10,8 @@ export default function SavedDraftsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const { callAPI, setIsLoggedIn } = useAuth(); 
+  const navigate = useNavigate();
+  const { callAPI, setUser, setIsLoggedIn } = useAuth(); 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -22,6 +22,12 @@ export default function SavedDraftsListPage() {
             credentials: 'include',
         });
 
+        
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
 
         const data: Post[] = response.data;
         

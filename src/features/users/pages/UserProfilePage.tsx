@@ -33,7 +33,7 @@ interface UserProfileState {
 // COMPONENT
 // ==========================================
 export default function UserProfilePage() {
-  const { callAPI } = useAuth();
+  const { callAPI, setUser } = useAuth();
   const [profile, setProfile] = useState<UserProfileState>({
     username: "",
     email: "",
@@ -66,6 +66,7 @@ export default function UserProfilePage() {
           });
   
           if (! response.isSessionActive) {
+              setUser(null);
               navigate(PATHS.LOGIN, {replace: true});
               return;
           }
@@ -126,6 +127,13 @@ export default function UserProfilePage() {
           body: formData,
         });
       
+        
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
+      
       if (! response.success) {
         throw new Error('Authentication failed');
       }
@@ -163,7 +171,13 @@ export default function UserProfilePage() {
             postId: id,
             isSaved: false
         })
-      })
+      });
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
       if(response.success){
         setSavedBlogs((prev) => prev.filter((blog) => blog.id !== id));
       }else{

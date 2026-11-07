@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/app/context/AuthContext';
 export default function Logout() {
     const navigate = useNavigate();
-    const { callAPI } = useAuth();
+    const { callAPI, setUser } = useAuth();
     useEffect(() => {
       const logout = async () => {
           const response = await callAPI(`/auth/logout`,{
@@ -13,6 +13,7 @@ export default function Logout() {
           });
           console.log("response logout", response);
           if(!response.isSessionActive){
+            setUser(null);
             navigate('/login');
           }
 
