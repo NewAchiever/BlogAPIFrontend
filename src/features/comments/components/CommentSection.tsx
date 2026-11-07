@@ -170,8 +170,7 @@ const updateComment = (
 
     const comment = findComment(comments, commentId);
     if (!comment) return;
-    
-    
+        
     const formData = new FormData(e.currentTarget);
     const replyValue = formData.get('reply');
     if (typeof replyValue !== "string") return;
@@ -192,7 +191,7 @@ const updateComment = (
       }
       comment.showReplyForm = false;
       const data: Comment = response.data;
-      console.log("comment: ", data);
+      
       const newReply: Comment = {
         
         ...data,
@@ -202,7 +201,7 @@ const updateComment = (
         replies: [],
         total_replies: 0,
       };
-      console.log("P_id", parentCommentId);
+      
       setComments((prevComments) => addReply(prevComments, parentCommentId, newReply));
 
     } catch (err) {
@@ -237,7 +236,15 @@ const updateComment = (
       if(! response.success){
         throw Error("Failed to fetch comments.");
       }
-      const data: Comment[] = response.data;
+      const data: Comment[] = response.data?.map((comment : Comment) => (
+        {
+          ...comment, 
+          isEditing: false,
+          showReplies: false,
+          showReplyForm: false,
+          replies: []
+      }
+      ));
       
       // Immediate UI change
 

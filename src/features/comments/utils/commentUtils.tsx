@@ -9,6 +9,7 @@ export const addReply = (
     return comments.map((comment) => {
       // Find parent
       if (comment.id === parentId) {
+        
          return {
             ...comment,
             replies: [...comment.replies, newReply],
