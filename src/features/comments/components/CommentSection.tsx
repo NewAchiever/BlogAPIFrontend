@@ -156,7 +156,7 @@ const updateComment = (
         navigate('/login');
       }
       
-      if (!response.error) {
+      if (!response.success) {
         throw new Error('Failed to update like status');
       }
     } catch (err) {

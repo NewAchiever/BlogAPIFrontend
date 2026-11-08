@@ -48,7 +48,7 @@ export default function Login() {
         navigate('/login');
       }
 
-      if (response.error) {
+      if (!response.success) {
         throw new Error('Authentication failed');
       }
 

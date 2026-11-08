@@ -27,7 +27,7 @@ export default function PostsListPage() {
           navigate('/login');
         }
 
-        if(!response.error){
+        if(!response.success){
           throw new Error('Failed to fetch posts.');
         }
         const data: Post[] = response.data;

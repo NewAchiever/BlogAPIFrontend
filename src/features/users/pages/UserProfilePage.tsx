@@ -163,7 +163,7 @@ export default function UserProfilePage() {
   // Remove a bookmark from the saved feed list state array
   const handleUnsaveBlog = async (id: number) => {
     try{
-      const response = await callAPI('/public/posts/handle_save_post', {
+      const response = await callAPI('/post/updatesavedpost', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json'},
@@ -172,17 +172,20 @@ export default function UserProfilePage() {
             isSaved: false
         })
       });
-      
-      if(!response.isSessionActive){
-        setUser(null);
-        navigate('/login');
-      }
+      console.log("RRRR: ", response);
       
       if(response.success){
         setSavedBlogs((prev) => prev.filter((blog) => blog.id !== id));
       }else{
         throw new Error('Failed to update save post.');
       }
+      
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
+      
       
 
     }catch(err){
