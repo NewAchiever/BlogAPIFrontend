@@ -83,59 +83,61 @@ export default function SavedDraftsListPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-slate-900 mb-8">Latest Posts</h1>
+        <h1 className="text-3xl font-bold text-slate-900 mb-8">Draft Posts</h1>
 
         <div className="space-y-4">
           {posts.map((post) => (
+            <Link to={PATHS.DRAFT_DETAIL(post.id)}>
             <article
-              key={post.id}
-              className="flex flex-row bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
-            >
-              <div>
-                <img
-                  src={post.cover_image || undefined}
-                  crossOrigin="use-credentials"
-                  alt='coverPic'
-                  className='w-32 h-32'
-                />   
-              </div>
-              {/* Title integrated with router config */}
-              <div className='w-full'>
-                <h2 className="text-xl font-semibold text-slate-900 mb-4 hover:text-indigo-600 transition-colors">
-                  <Link to={PATHS.DRAFT_DETAIL(post.id)}>
-                    {post.title}
-                  </Link>
-                </h2>
-                
-                <div className="flex items-center justify-between text-sm text-slate-600 border-t border-slate-100 pt-4">
-                  
-                  <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4 text-slate-400" />
-                    <span className="font-medium text-slate-700">{post.author}</span>
-                  </div>
-                  <span>Excerpt:{post.excerpt}</span>
-                  <div className="flex items-center space-x-6">
-                    <button
-                      onClick={() => handleLike(post.id)}
-                      className={`flex items-center space-x-1.5 transition-colors ${
-                        post.isLiked ? 'text-rose-600' : 'text-slate-500 hover:text-rose-600'
-                      }`}
-                      aria-label="Like post"
-                    >
-                      <Heart
-                        className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`}
-                      />
-                      <span className="font-medium">{post.likes}</span>
-                    </button>
-
-                    <div className="flex items-center space-x-1.5 text-slate-500">
-                      <MessageSquare className="w-4 h-4" />
-                      <span className="font-medium">{post.comments}</span>
-                    </div>
-                  </div>
+                key={post.id}
+                className="flex flex-row gap-7 my-3 bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
+              >
+                <div className='w-64 h-32'>
+                  <img
+                    src={post.cover_image || undefined}
+                    crossOrigin="use-credentials"
+                    alt='coverPic'
+                    className='h-full w-full object-cover'
+                  />   
                 </div>
-              </div>
-            </article>
+                
+                <div className='w-full'>
+                  <h2 className="text-xl font-semibold text-slate-900 mb-4 hover:text-indigo-600 transition-colors">
+                    
+                      {post.title}
+                    
+                  </h2>
+                  
+                  <div className="flex items-center  text-sm text-slate-600 border-t border-slate-100 pt-4">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4 text-slate-400" />
+                      <span className="font-medium text-slate-700">{post.author}</span>
+                    </div>
+                    <span>Excerpt:{post.excerpt}</span>
+                  </div>
+                  <div className="flex items-center space-x-6 mt-auto">
+                      <button
+                        onClick={() => handleLike(post.id)}
+                        className={`flex items-center space-x-1.5 transition-colors ${
+                          post.isLiked ? 'text-rose-600' : 'text-slate-500 hover:text-rose-600'
+                        }`}
+                        aria-label="Like post"
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`}
+                        />
+                        <span className="font-medium">{post.likes}</span>
+                      </button>
+  
+                      <div className="flex items-center space-x-1.5 text-slate-500">
+                        <MessageSquare className="w-4 h-4" />
+                        <span className="font-medium">{post.comments}</span>
+                      </div>
+                    </div>
+                </div>
+                
+              </article>
+            </Link>
           ))}
         </div>
       </div>

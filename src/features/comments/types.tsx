@@ -3,7 +3,7 @@ import { type Dispatch,  type SetStateAction } from "react";
 
 export interface Comment {
   id: number;
-  author: string;
+  username: string;
   comment: string;
   created_at: string;
   likes: number;

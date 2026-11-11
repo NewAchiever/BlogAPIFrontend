@@ -2,7 +2,7 @@
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { PostsListPage, CreatePostPage, PostDetailPage, SavedDraftsListPage } from '@/features/posts';
 import { LoginPage, SignupPage, ChangePasswordPage, Logout } from '@/features/auth';
-import { UserProfilePage } from '@/features/users';
+import { UserProfilePage, AuthorProfilePage } from '@/features/users';
 import AppLayout from '@/app/AppLayout';
 import EditDraftPage from '@/features/posts/pages/EditDraftPage';
 
@@ -15,6 +15,7 @@ export interface RoutesConfig {
   CREATE_POST: string;
   CHANGE_PASSWORD: string;
   USER_PROFILE_PAGE: string;
+  AUTHOR_PROFILE_PAGE: string;
   BLOG: string;
   DRAFTS: string;
   DRAFT_DETAIL: (id?: string | number) => string;
@@ -31,6 +32,7 @@ export const PATHS: RoutesConfig = {
   CREATE_POST: '/create_post',
   CHANGE_PASSWORD: '/change_password',
   USER_PROFILE_PAGE: '/profile',
+  AUTHOR_PROFILE_PAGE: '/author',
   BLOG: '/posts',
   DRAFTS: '/drafts',
   DRAFT_DETAIL: (id: string | number = ':postId'): string => `/draft/${id}`,
@@ -50,6 +52,7 @@ const routes: RouteObject[] = [
         { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
         { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
         { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
+        { path: PATHS.AUTHOR_PROFILE_PAGE, element: <AuthorProfilePage/> },
         { path: PATHS.HOME, element: <PostsListPage /> },
         { path: PATHS.BLOG, element: <PostsListPage /> },
         { path: PATHS.DRAFTS, element: <SavedDraftsListPage /> },

@@ -1,6 +1,6 @@
 import { PATHS } from '@/routes/routes.config';
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, User, Loader2 } from 'lucide-react';
 import {type Post} from '../types';
@@ -10,8 +10,11 @@ export default function PostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWelcome, setShowWelcome] = useState<boolean>(false);
+
   const navigate = useNavigate();
-  const { callAPI, setUser, setIsLoggedIn } = useAuth(); 
+  const location = useLocation();
+  const { callAPI, user, setUser, setIsLoggedIn } = useAuth(); 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -42,6 +45,17 @@ export default function PostsListPage() {
 
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+        if (location.state?.showWelcome) {
+            setShowWelcome(true);
+
+            navigate(location.pathname, {
+                replace: true,
+                state: null
+            });
+        }
+    }, [location, navigate]);
   // 3. Optimistic Like handler with API synchronization
   const handleLike = async (id: number) => {
     const targetPost = posts.find((p) => p.id === id);
@@ -83,39 +97,44 @@ export default function PostsListPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
+      { showWelcome && ( 
+        <span>Welcome, <span className='capitalize'>{user?.username}</span>!<br/> We're glad to have you back.</span>
+        
+      )}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-900 mb-8">Latest Posts</h1>
 
         <div className="space-y-4">
           {posts.map((post) => (
+            <Link to={PATHS.BLOG_DETAIL(post.id)}>
             <article
               key={post.id}
-              className="flex flex-row bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
+              className="flex flex-row gap-7 my-3 bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200"
             >
-              <div>
+              <div className='w-64 h-32'>
                 <img
                   src={post.cover_image || undefined}
                   crossOrigin="use-credentials"
                   alt='coverPic'
-                  className='w-32 h-32'
+                  className='h-full w-full object-cover'
                 />   
               </div>
-              {/* Title integrated with router config */}
+              
               <div className='w-full'>
                 <h2 className="text-xl font-semibold text-slate-900 mb-4 hover:text-indigo-600 transition-colors">
-                  <Link to={PATHS.BLOG_DETAIL(post.id)}>
+                  
                     {post.title}
-                  </Link>
+                  
                 </h2>
                 
-                <div className="flex items-center justify-between text-sm text-slate-600 border-t border-slate-100 pt-4">
-                  
+                <div className="flex items-center  text-sm text-slate-600 border-t border-slate-100 pt-4">
                   <div className="flex items-center space-x-2">
                     <User className="w-4 h-4 text-slate-400" />
                     <span className="font-medium text-slate-700">{post.author}</span>
                   </div>
                   <span>Excerpt:{post.excerpt}</span>
-                  <div className="flex items-center space-x-6">
+                </div>
+                <div className="flex items-center space-x-6 mt-auto">
                     <button
                       onClick={() => handleLike(post.id)}
                       className={`flex items-center space-x-1.5 transition-colors ${
@@ -134,9 +153,10 @@ export default function PostsListPage() {
                       <span className="font-medium">{post.comments}</span>
                     </div>
                   </div>
-                </div>
               </div>
+              
             </article>
+            </Link>
           ))}
         </div>
       </div>

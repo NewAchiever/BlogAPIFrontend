@@ -26,28 +26,28 @@ export default function CommentItem({
                   <div className="p-1.5 bg-slate-100 rounded-full text-slate-500">
                     <User className="w-4 h-4"/>
                   </div>
-                  <span className="font-semibold text-slate-800 text-sm">{comment.author}</span>
+                  <span className="font-semibold text-slate-800 text-sm capitalize">{comment.username}</span>
                 </div>
                 <span className="text-xs text-slate-400">
                   {new Date(comment.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-slate-600 text-sm pl-2 text-left leading-relaxed">{comment.comment}</p>
-              <div className='flex flex-row gap-4'>
+              <p className="text-slate-600 text-base pl-2 my-3 text-left leading-relaxed">{comment.comment}</p>
+              <div className='flex flex-row justify-end gap-4'>
                 <button
                   onClick={() => handleLike(comment.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
+                  className={`flex items-center space-x-1.5 text-sm px-3 rounded-full ${
                     comment.isLiked
                       ? 'bg-rose-50 text-rose-600 font-medium'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   <Heart className={`w-4 h-4 ${comment.isLiked ? 'fill-current' : ''}`} />
-                  <span>{comment.likes} Likes</span>
+                  <span>{comment.likes} { comment.likes === 0 || comment.likes === 1 ? 'Like' : 'Likes'  }</span>
                 </button>
                 <button
                   onClick={() => showReplyForm(comment.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors  
+                  className={`flex items-center space-x-1.5 px-3 text-sm py-1 rounded-full transition-colors  
                     bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -56,14 +56,10 @@ export default function CommentItem({
                 </button>
                 <button
                   onClick={() => handleViewMore(comment.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
-                    comment.isLiked
-                      ? 'bg-rose-50 text-rose-600 font-medium'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                  className={'flex items-center space-x-1.5 px-3 rounded-full text-sm bg-slate-100 text-slate-600 hover:bg-slate-200'}
                 >
-                  <ChevronDown className={`w-4 h-4 ${comment.isLiked ? 'fill-current' : ''}`} />
-                  <span>{comment.total_replies} Replies</span>
+                  <ChevronDown className='w-4 h-4' />
+                  <span>{comment.total_replies} { comment.total_replies === 0 || comment.total_replies === 1 ? 'Reply' : 'Replies'}</span>
                 </button>
               </div>  
             </div>

@@ -52,16 +52,15 @@ export default function Login() {
         throw new Error('Authentication failed');
       }
 
-      const data: LoginResponse = response.data;
-      setUser(data.user);
+      const user: LoginResponse = response.data;
+      setUser(user);
       setIsLoggedIn(true);
-
-      
-      // Save your authentication token (JWT) safely
-      localStorage.setItem('token', data.token);
       
       // Redirect or update application auth state here
-      navigate(PATHS.BLOG, { replace: true });
+      navigate(PATHS.BLOG, { 
+        state: { showWelcome: true },
+        replace: true }
+      );
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

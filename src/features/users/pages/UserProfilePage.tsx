@@ -4,16 +4,11 @@ import { PATHS } from '@/routes/routes.config';
 import { type ApiError } from '@/shared/types';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
+import { type Post } from '@/features/posts';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
-interface SavedBlog {
-  id: number;
-  title: string;
-  category: string;
-  savedAt: string;
-  slug: string;
-}
+
 
 interface FollowedAuthor {
   id: string;
@@ -40,7 +35,7 @@ export default function UserProfilePage() {
     profile_pic: "",
     profile_pic_file: undefined
   });
-  const [savedBlogs, setSavedBlogs] = useState<SavedBlog[]>([]);
+  const [savedBlogs, setSavedBlogs] = useState<Post[]>([]);
   const [followedAuthors, setFollowedAuthors] = useState<FollowedAuthor[]>();
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
   const [editForm, setEditForm] = useState<UserProfileState>({
@@ -338,15 +333,22 @@ export default function UserProfilePage() {
             <div className="space-y-4">
               {savedBlogs.length > 0 ? (
                 savedBlogs.map((blog) => (
-                  <div key={blog.id} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between gap-4 transition-all hover:border-gray-300">
-                    <div className="min-w-0">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                        
-                      </span>
-                      <h3 className="text-base font-bold text-gray-900 mt-2 truncate hover:text-blue-600 cursor-pointer">
-                        {blog.title}
-                      </h3>
-                      
+                  <div key={blog.id} onClick={() => navigate(`/post/${blog.id}`)} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between gap-4 transition-all hover:border-gray-300">
+                    <div className="flex flex-row gap-3 min-w-0">
+                      <div className='w-24'>
+                        <img
+                          src={blog.cover_image || undefined}
+                          crossOrigin="use-credentials"
+                          alt='coverPic'
+                          className=''
+                        />   
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-left text-gray-900 mt-2 truncate hover:text-blue-600 cursor-pointer">
+                          {blog.title}
+                        </h3>
+                        <span className='text-sm italic'>{blog.excerpt}</span>
+                      </div>
                     </div>
                     <button
                       type="button"

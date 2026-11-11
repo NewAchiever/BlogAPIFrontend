@@ -32,6 +32,10 @@ function Navbar() {
             {isLoggedIn ? (
                 <>
                     <div>
+                        <Link to="/create_post">Create Post</Link>
+                    </div>
+
+                    <div>
                         <Link to="/drafts">Drafts</Link>
                     </div>
                     <div>
@@ -40,8 +44,6 @@ function Navbar() {
                     <div>
                         <Link to="/posts">My Posts</Link>
                     </div>
-
-                    <span>Welcome, {user?.username}</span>
 
                     <button onClick={handleLogout}>
                         Logout

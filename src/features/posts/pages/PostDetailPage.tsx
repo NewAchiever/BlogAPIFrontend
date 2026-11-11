@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heart,Bookmark, ArrowLeft, Loader2, User } from 'lucide-react';
+import { Heart,Bookmark, ArrowLeft, Loader2, User, UserPlus } from 'lucide-react';
 import { PATHS } from '@/routes/routes.config';
 import CommentSection from '@/features/comments/components/CommentSection';
 import {type Comment } from '@/features/comments/types';
 import { API_BASE_URL } from "@/config/api";
 import { useAuth } from '@/app/context/AuthContext';
+import { Navbar } from '../components/Navbar';
 export interface BlogPostDetailData {
   id: number;
   title: string;
   username: string;
   content: string;
+  cover_image: string;
   likes: number;
   isLiked?: boolean;
   isSaved?: boolean;
+  isFollowed?: boolean;
   comments: Comment[];
 }
 
@@ -182,34 +185,77 @@ export default function PostDetailPage() {
         </h1>
 
         {/* Metadata Header */}
-        <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-100 text-sm">
-          <div className="flex items-center space-x-2">
-            <User className="w-4 h-4 text-slate-400" />
-            <span className="font-semibold text-slate-700">{post.username}</span>
+        <div className="flex items-center justify-between pb-2 mb-2 border-slate-100 text-sm">
+          <div className="flex items-center flex-row space-x-2">
+            <div className='h-10 w-10 rounded-full overflow-hidden'>
+              <img
+                src={post.cover_image || undefined}
+                crossOrigin="use-credentials"
+                alt='coverPic'
+                className='h-full w-full object-cover'
+              />   
+            </div>
+
+            <div className='flex flex-col gap-1'>
+              <span className="font-semibold text-left text-md pl-1 text-slate-700 capitalize">{post.username}</span>
+              <button
+                className={`flex items-center space-x-1 px-3 py-1 rounded-full transition-colors ${
+                  post.isFollowed
+                    ? 'bg-rose-50 text-rose-600 font-medium'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <div className='flex flex-row items-center gap-1 text-xs'>
+                  <UserPlus className={`h-3 w-3 inline ${post.isFollowed ? 'fill-current' : ''}`} />
+                  <span>Follow</span>
+                </div>
+              </button>
+            </div>
+
+            
           </div>
-          <button
-            onClick={handleSave}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
-              post.isSaved
-                ? 'bg-rose-50 text-rose-600 font-medium'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            <Bookmark className={`w-4 h-4 ${post.isSaved ? 'fill-current' : ''}`} />
-            <span>Save</span>
-          </button>
-          <button
-            onClick={handleLike}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
-              post.isLiked
-                ? 'bg-rose-50 text-rose-600 font-medium'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            <Heart className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`} />
-            <span>{post.likes} Likes</span>
-          </button>
+          <div className='flex flex-row gap-2'>
+            <button
+              onClick={handleSave}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
+                post.isSaved
+                  ? 'bg-rose-50 text-rose-600 font-medium'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <Bookmark className={`w-4 h-4 ${post.isSaved ? 'fill-current' : ''}`} />
+              <span>Save</span>
+            </button>
+            <button
+              onClick={handleLike}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full transition-colors ${
+                post.isLiked
+                  ? 'bg-rose-50 text-rose-600 font-medium'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${post.isLiked ? 'fill-current' : ''}`} />
+              <span>{post.likes} Likes</span>
+            </button>
+          </div>
         </div>
+        <Navbar handleLike={handleLike}
+                handleSave={handleSave}
+                isSaved={post.isSaved}
+                isLiked={post.isLiked}
+                likes={post.likes}
+                title={post.title}
+                author={post.username}
+          />
+        <div className='my-8'>
+          <img
+            src={post.cover_image || undefined}
+            crossOrigin="use-credentials"
+            alt='coverPic'
+            className='w-full'
+          />   
+        </div>
+        
 
         {/* Main Body */}
         <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-4 mb-8">

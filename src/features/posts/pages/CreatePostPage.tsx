@@ -130,6 +130,14 @@ export default function CreatePostPage(){
     
   };
 
+  const handleCancel = () => {
+    const result = window.confirm("Are you sure you want to leave this post? Any unsaved changes will be lost.");
+
+    if (result) {
+        navigate(-1);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -144,6 +152,7 @@ export default function CreatePostPage(){
             <button
               type="button"
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              onClick={handleCancel}
             >
               Cancel
             </button>
