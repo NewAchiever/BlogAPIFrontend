@@ -7,6 +7,8 @@ type AuthContextType = {
   setUser: (user: User | null) => void;
   isLoggedIn: boolean | null;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setIsAuthLoading: (isAuthLoading: boolean) => void;
+  isAuthLoading: boolean | null;
   callAPI: (
         url: string,
         options?: RequestInit
@@ -27,13 +29,13 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(false);
-
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean | null>(true);
   const callAPI = (
     url: string,
     options: RequestInit = {},
     err: string = "",
   ) => {
-    return fetchAPI(url, options, err, setIsLoggedIn);
+    return fetchAPI(url, options, err, setIsLoggedIn, setIsAuthLoading);
   }
   return (
     <AuthContext.Provider
@@ -42,6 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser,
         isLoggedIn,
         setIsLoggedIn,
+        setIsAuthLoading,
+        isAuthLoading,
         callAPI
       }}
     >

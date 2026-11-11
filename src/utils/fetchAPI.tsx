@@ -4,7 +4,8 @@ export const fetchAPI = async <T,>(
 urlEndPoint: string, 
 options: RequestInit = {},
 err: string,
-setIsLoggedIn:(isLoggedIn: boolean | null) => void
+setIsLoggedIn:(isLoggedIn: boolean | null) => void,
+setIsAuthLoading:(isAuthLoading: boolean | null) => void
 ): Promise<ApiResponse<T>> => {
     try{
         const responseAPI = await fetch(`${API_BASE_URL}${urlEndPoint}`, {
@@ -14,11 +15,13 @@ setIsLoggedIn:(isLoggedIn: boolean | null) => void
 
         const response = await responseAPI.json();
         const isSessionActive = response.isSessionActive;
-        
+        console.log("calling: ", urlEndPoint);
         if (response.isSessionActive === false) {
             setIsLoggedIn(false);
+            setIsAuthLoading(false);
         } else if (response.isSessionActive === true) {
             setIsLoggedIn(true);
+            setIsAuthLoading(false);
         }
         const success = responseAPI.ok;
         return {
@@ -39,6 +42,4 @@ setIsLoggedIn:(isLoggedIn: boolean | null) => void
             isSessionActive: null
         };
     }
-     
-
 }

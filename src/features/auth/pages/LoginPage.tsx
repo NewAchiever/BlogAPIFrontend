@@ -6,10 +6,10 @@ import { PATHS } from '@/routes/routes.config';
 import { useAuth } from '@/app/context/AuthContext';
 import { API_BASE_URL } from '@/config/api';
 export default function Login() {
-  const { setUser, setIsLoggedIn, callAPI } = useAuth();
+  const { setUser, setIsLoggedIn, setIsAuthLoading, callAPI } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
+  setIsAuthLoading(false);
   // 1. Manage form field state with explicit types
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -28,14 +28,15 @@ export default function Login() {
       [name]: value,
     }));
   };
-  console.log(err);
+  
   // 3. Strongly typed submission handler
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    try {      
+    try {    
+        
       const response = await callAPI('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

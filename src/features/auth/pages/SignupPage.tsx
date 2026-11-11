@@ -12,11 +12,12 @@ email: '',
 password: '',
 confirmPassword: '',
 });
-const { setUser, setIsLoggedIn, isLoggedIn, callAPI  } = useAuth();
+const { setUser, setIsLoggedIn, setIsAuthLoading, isLoggedIn, callAPI  } = useAuth();
 const [error, setError] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
 const [success, setSuccess] = useState(false);
 const navigate = useNavigate();
+setIsAuthLoading(false);
 useEffect(() => {
   if(isLoggedIn){
     navigate('/');
