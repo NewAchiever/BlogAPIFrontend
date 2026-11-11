@@ -27,7 +27,6 @@ export default function PostsListPage() {
 
         if(!response.isSessionActive){
           setUser(null);
-          navigate('/login');
         }
 
         if(!response.success){

@@ -5,6 +5,7 @@ import { LoginPage, SignupPage, ChangePasswordPage, Logout } from '@/features/au
 import { UserProfilePage, AuthorProfilePage } from '@/features/users';
 import AppLayout from '@/app/AppLayout';
 import EditDraftPage from '@/features/posts/pages/EditDraftPage';
+import ProtectedRoute from './ProtectedRoutes';
 
 // 1. Centralized Paths
 export interface RoutesConfig {
@@ -47,17 +48,22 @@ const routes: RouteObject[] = [
     element: <AppLayout/>,
     children: [
         { path: PATHS.LOGIN, element: <LoginPage /> },
-        { path: PATHS.LOGOUT, element: <Logout /> },
         { path: PATHS.SIGNUP, element: <SignupPage /> },
-        { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
-        { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
-        { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
-        { path: PATHS.AUTHOR_PROFILE_PAGE, element: <AuthorProfilePage/> },
-        { path: PATHS.HOME, element: <PostsListPage /> },
-        { path: PATHS.BLOG, element: <PostsListPage /> },
-        { path: PATHS.DRAFTS, element: <SavedDraftsListPage /> },
-        { path: PATHS.DRAFT_DETAIL(), element: <EditDraftPage /> },
-        { path: PATHS.BLOG_DETAIL(), element: <PostDetailPage /> },
+        {
+          element: <ProtectedRoute/>,
+          children: [
+            { path: PATHS.LOGOUT, element: <Logout /> },
+            { path: PATHS.CREATE_POST, element: <CreatePostPage/>},
+            { path: PATHS.CHANGE_PASSWORD, element: <ChangePasswordPage/> },
+            { path: PATHS.USER_PROFILE_PAGE, element: <UserProfilePage/> },
+            { path: PATHS.AUTHOR_PROFILE_PAGE, element: <AuthorProfilePage/> },
+            { path: PATHS.HOME, element: <PostsListPage /> },
+            { path: PATHS.BLOG, element: <PostsListPage /> },
+            { path: PATHS.DRAFTS, element: <SavedDraftsListPage /> },
+            { path: PATHS.DRAFT_DETAIL(), element: <EditDraftPage /> },
+            { path: PATHS.BLOG_DETAIL(), element: <PostDetailPage /> },
+          ]
+        },
         { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
       ]
   }
