@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useBlocker } from 'react-router-dom';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -23,6 +23,9 @@ interface PostFormState {
 export default function CreatePostPage(){
   const { callAPI, setUser } = useAuth();
   const  navigate = useNavigate();
+  const blocker = useBlocker(({currentLocation, nextLocation}) => 
+    currentLocation.pathname !== nextLocation.pathname
+  );
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<PostFormState>({
     title: '',
@@ -35,6 +38,20 @@ export default function CreatePostPage(){
     tags: '',
     isPublished: false,
   });
+
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+        const confirmLeave = window.confirm(
+            "Are you sure you want to leave this post? Any unsaved changes will be lost."
+        );
+
+        if (confirmLeave) {
+            blocker.proceed();
+        } else {
+            blocker.reset();
+        }
+    }
+}, [blocker]);
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 

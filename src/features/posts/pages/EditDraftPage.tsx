@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useBlocker, useNavigate, useParams } from 'react-router-dom';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -24,6 +24,9 @@ export default function EditDraftPage(){
   const { postId } = useParams<{ postId: string }>();
   const { callAPI, setUser } = useAuth();
   const  navigate = useNavigate();
+  const blocker = useBlocker(({currentLocation, nextLocation}) => 
+      currentLocation.pathname !== nextLocation.pathname
+    );
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<PostFormState>({
     title: '',
@@ -48,6 +51,19 @@ export default function EditDraftPage(){
       .replace(/\s+/g, '-')         // Replace spaces with hyphens
       .replace(/-+/g, '-');         // Remove consecutive hyphens
   };
+  useEffect(() => {
+      if (blocker.state === "blocked") {
+          const confirmLeave = window.confirm(
+              "Are you sure you want to leave this post? Any unsaved changes will be lost."
+          );
+  
+          if (confirmLeave) {
+              blocker.proceed();
+          } else {
+              blocker.reset();
+          }
+      }
+  }, [blocker]);
   useEffect(() => {
     const fetchDraft = async () => {
       try{
