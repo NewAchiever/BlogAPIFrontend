@@ -15,8 +15,6 @@ setIsLoggedIn:(isLoggedIn: boolean | null) => void
         const response = await responseAPI.json();
         const isSessionActive = response.isSessionActive;
         
-
-        console.log("INSIDE FETCHAPPI", response);
         if (response.isSessionActive === false) {
             setIsLoggedIn(false);
         } else if (response.isSessionActive === true) {

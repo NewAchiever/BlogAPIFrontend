@@ -68,11 +68,10 @@ export default function ChangePasswordPage(){
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div className="flex-grow bg-gray-50 text-gray-900 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-sm border border-gray-200">
         
-        {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">Change Password</h1>
           <p className="mt-2 text-sm text-gray-600">Please enter your current password and choose a secure new password.</p>
         </div>

@@ -26,7 +26,7 @@ export default function PostDetailPage() {
   const [isPostSaved, setIsPostSaved] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();
   // 1. Fetch post details and comments from API
   useEffect(() => {

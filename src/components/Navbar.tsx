@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/app/context/AuthContext";
 import { PATHS } from "@/routes/routes.config";
 function Navbar() {
-  const { user, isLoggedIn, setUser, callAPI } = useAuth();
+  const { user, setIsLoggedIn, isLoggedIn, setUser, callAPI } = useAuth();
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -45,7 +45,7 @@ function Navbar() {
                         <Link to="/posts">My Posts</Link>
                     </div>
 
-                    <button onClick={handleLogout}>
+                    <button onClick={() => navigate('/logout')}>
                         Logout
                     </button>
                 </>

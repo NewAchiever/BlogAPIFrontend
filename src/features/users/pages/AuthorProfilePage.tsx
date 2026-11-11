@@ -28,7 +28,7 @@ interface UserProfileState {
 // COMPONENT
 // ==========================================
 export default function AuthorProfilePage() {
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const [profile, setProfile] = useState<UserProfileState>({
     username: "",
     email: "",
@@ -63,7 +63,7 @@ export default function AuthorProfilePage() {
           if (! response.isSessionActive) {
               setUser(null);
               navigate(PATHS.LOGIN, {replace: true});
-              return;
+              
           }
   
           if (!response.success) {

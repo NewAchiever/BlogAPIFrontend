@@ -22,7 +22,7 @@ interface PostFormState {
 // ==========================================
 export default function EditDraftPage(){
   const { postId } = useParams<{ postId: string }>();
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const  navigate = useNavigate();
   const blocker = useBlocker(({currentLocation, nextLocation}) => 
       currentLocation.pathname !== nextLocation.pathname
@@ -171,11 +171,7 @@ export default function EditDraftPage(){
   };
 
   const handleCancel = () => {
-    const result = window.confirm("Are you sure you want to leave this post? Any unsaved changes will be lost.");
-
-    if (result) {
-        navigate('/drafts');
-    }
+    navigate('/drafts');
   }
 
   return (

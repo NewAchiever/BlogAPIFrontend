@@ -134,7 +134,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: '100vh',
+    flexGrow: '1',
     backgroundColor: '#f3f4f6',
     fontFamily: 'system-ui, sans-serif'
   },

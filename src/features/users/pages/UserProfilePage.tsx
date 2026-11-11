@@ -28,7 +28,7 @@ interface UserProfileState {
 // COMPONENT
 // ==========================================
 export default function UserProfilePage() {
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const [profile, setProfile] = useState<UserProfileState>({
     username: "",
     email: "",
@@ -292,7 +292,7 @@ export default function UserProfilePage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => alert('Redirecting to password update workspace component layout module...')}
+                  onClick={() => navigate('/change_password')}
                   className="flex-1 md:flex-initial text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                 >
                   Change Password

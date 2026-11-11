@@ -8,7 +8,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function CommentSection({ postId, commentsFromDB, onAddComment }: CommentSectionProps) {
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const [authorInput, setAuthorInput] = useState('');
   const [textInput, setTextInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

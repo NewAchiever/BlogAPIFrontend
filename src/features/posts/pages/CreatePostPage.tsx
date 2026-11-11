@@ -21,7 +21,7 @@ interface PostFormState {
 // COMPONENT
 // ==========================================
 export default function CreatePostPage(){
-  const { callAPI, setUser } = useAuth();
+  const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const  navigate = useNavigate();
   const blocker = useBlocker(({currentLocation, nextLocation}) => 
     currentLocation.pathname !== nextLocation.pathname
@@ -148,11 +148,8 @@ export default function CreatePostPage(){
   };
 
   const handleCancel = () => {
-    const result = window.confirm("Are you sure you want to leave this post? Any unsaved changes will be lost.");
-
-    if (result) {
-        navigate(-1);
-    }
+    
+    navigate(-1);
   }
 
   return (
