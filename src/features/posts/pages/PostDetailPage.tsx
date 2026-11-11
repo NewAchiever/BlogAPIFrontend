@@ -67,7 +67,7 @@ export default function PostDetailPage() {
     }
 
   }, [postId]);
-  usePageTitle(post?.title || 'Post Detail');
+  usePageTitle(post?.title ?? 'Post Detail');
   const handleSave = async() => {
     if (!post) return;
     try{
