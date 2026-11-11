@@ -3,11 +3,11 @@ import { useAuth } from "@/app/context/AuthContext";
 import { PATHS } from './routes.config';
 const ProtectedRoute = () => {
     const { isLoggedIn, setIsAuthLoading } = useAuth();
-
+    setIsAuthLoading(false);
     if (!isLoggedIn) {
         return <Navigate to={PATHS.LOGIN} replace />;
     }
-    setIsAuthLoading(false);
+    
     return <Outlet />;
 };
 

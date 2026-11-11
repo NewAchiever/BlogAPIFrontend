@@ -27,8 +27,14 @@ export function useAuth() {
   return context;
 }
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(false);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem('user_session');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(() => {
+    const savedUser = localStorage.getItem('user_session');
+    return savedUser ? true : false;
+  });
   const [isAuthLoading, setIsAuthLoading] = useState<boolean | null>(true);
   const callAPI = (
     url: string,

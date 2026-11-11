@@ -6,6 +6,7 @@ import { UserProfilePage, AuthorProfilePage } from '@/features/users';
 import AppLayout from '@/app/AppLayout';
 import EditDraftPage from '@/features/posts/pages/EditDraftPage';
 import ProtectedRoute from './ProtectedRoutes';
+import PageNotFound from '@/shared/pages/PageNotFound';
 
 // 1. Centralized Paths
 export interface RoutesConfig {
@@ -64,7 +65,7 @@ const routes: RouteObject[] = [
             { path: PATHS.BLOG_DETAIL(), element: <PostDetailPage /> },
           ]
         },
-        { path: PATHS.NOT_FOUND, element: <Navigate to={PATHS.LOGIN} replace /> },
+        { path: PATHS.NOT_FOUND, element: <PageNotFound/> },
       ]
   }
 ];

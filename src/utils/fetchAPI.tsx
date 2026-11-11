@@ -23,6 +23,7 @@ setIsAuthLoading:(isAuthLoading: boolean | null) => void
             setIsLoggedIn(true);
             setIsAuthLoading(false);
         }
+
         const success = responseAPI.ok;
         return {
             success: success,

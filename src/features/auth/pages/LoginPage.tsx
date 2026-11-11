@@ -55,6 +55,7 @@ export default function Login() {
 
       const user: LoginResponse = response.data;
       setUser(user);
+      localStorage.setItem('user_session', JSON.stringify(user));
       setIsLoggedIn(true);
       
       // Redirect or update application auth state here

@@ -15,6 +15,7 @@ export default function Logout() {
           if(!response.isSessionActive){
             setUser(null);
             setIsLoggedIn(false);
+            localStorage.removeItem('user_session');
             navigate('/login');
           }
 
