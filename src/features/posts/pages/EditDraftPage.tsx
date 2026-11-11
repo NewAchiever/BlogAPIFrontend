@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
 import { useBlocker, useNavigate, useParams } from 'react-router-dom';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -41,7 +41,7 @@ export default function EditDraftPage(){
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  usePageTitle('Edit Draft');
   // Helper function to turn strings into clean SEO-friendly URLs
   const generateSlug = (text: string): string => {
     return text

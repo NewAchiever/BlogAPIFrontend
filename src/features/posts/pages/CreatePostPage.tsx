@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
 import { useNavigate, useBlocker } from 'react-router-dom';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -38,7 +39,7 @@ export default function CreatePostPage(){
     tags: '',
     isPublished: false,
   });
-
+  usePageTitle('Create Post');
   useEffect(() => {
     if (blocker.state === "blocked") {
         const confirmLeave = window.confirm(

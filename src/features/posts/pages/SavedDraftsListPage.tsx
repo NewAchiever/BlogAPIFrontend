@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, User, Loader2 } from 'lucide-react';
 import {type Post} from '../types';
 import { useAuth } from '@/app/context/AuthContext';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 
 export default function SavedDraftsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -12,6 +13,7 @@ export default function SavedDraftsListPage() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { callAPI, setUser, setIsLoggedIn } = useAuth(); 
+  usePageTitle('Drafts');
   useEffect(() => {
     const fetchPosts = async () => {
       try {

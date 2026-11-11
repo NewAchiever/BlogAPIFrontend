@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import usePageTitle from '@/shared/hooks/usePageTitle';
 interface ChangePasswordFormState {
   currentPassword: string;
   newPassword: string;
@@ -22,7 +22,7 @@ export default function ChangePasswordPage(){
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  usePageTitle('Change Password');
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

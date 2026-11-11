@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, User, Loader2 } from 'lucide-react';
 import {type Post} from '../types';
 import { useAuth } from '@/app/context/AuthContext';
-
+import usePageTitle from '@/shared/hooks/usePageTitle';
 export default function PostsListPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -15,6 +15,7 @@ export default function PostsListPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { callAPI, user, setUser, setIsLoggedIn } = useAuth(); 
+  usePageTitle('Home');
   useEffect(() => {
     const fetchPosts = async () => {
       try {

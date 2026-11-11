@@ -1,8 +1,10 @@
 import React, { useState, type ChangeEvent } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 export default function PageNotFound() {
     const { setIsAuthLoading } = useAuth(); 
     setIsAuthLoading(false);
+    usePageTitle('Page Not Found');
   return (
     <div style={styles.container}>
       <div style={styles.card}>

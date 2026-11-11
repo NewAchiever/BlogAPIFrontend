@@ -3,6 +3,7 @@ import type { SignupFormData } from '../types';
 import type { ApiError } from '@/shared/types';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '@/app/context/AuthContext';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 
 export default function Signup(){
 
@@ -18,6 +19,7 @@ const [loading, setLoading] = useState(false);
 const [success, setSuccess] = useState(false);
 const navigate = useNavigate();
 setIsAuthLoading(false);
+usePageTitle('Signup');
 useEffect(() => {
   if(isLoggedIn){
     navigate('/');

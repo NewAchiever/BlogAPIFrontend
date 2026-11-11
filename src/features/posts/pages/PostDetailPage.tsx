@@ -4,9 +4,9 @@ import { Heart,Bookmark, ArrowLeft, Loader2, User, UserPlus } from 'lucide-react
 import { PATHS } from '@/routes/routes.config';
 import CommentSection from '@/features/comments/components/CommentSection';
 import {type Comment } from '@/features/comments/types';
-import { API_BASE_URL } from "@/config/api";
 import { useAuth } from '@/app/context/AuthContext';
 import { Navbar } from '../components/Navbar';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 export interface BlogPostDetailData {
   id: number;
   title: string;
@@ -28,6 +28,7 @@ export default function PostDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();
+  
   // 1. Fetch post details and comments from API
   useEffect(() => {
     const fetchPostDetail = async () => {
@@ -66,7 +67,7 @@ export default function PostDetailPage() {
     }
 
   }, [postId]);
-
+  usePageTitle(post?.title || 'Post Detail');
   const handleSave = async() => {
     if (!post) return;
     try{

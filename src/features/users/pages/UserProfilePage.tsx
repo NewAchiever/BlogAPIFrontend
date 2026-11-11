@@ -5,6 +5,7 @@ import { type ApiError } from '@/shared/types';
 import { API_BASE_URL } from '@/config/api';
 import { useAuth } from '@/app/context/AuthContext';
 import { type Post } from '@/features/posts';
+import usePageTitle from '@/shared/hooks/usePageTitle';
 // ==========================================
 // TYPES & INTERFACES
 // ==========================================
@@ -49,6 +50,7 @@ export default function UserProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'saved' | 'authors'>('saved');
   const navigate = useNavigate();
+  usePageTitle('Profile');
   // Loading User profile
    useEffect(() => {
       const fetchUserProfile = async () => {
