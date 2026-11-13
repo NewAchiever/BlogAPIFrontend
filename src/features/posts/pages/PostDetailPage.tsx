@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heart,Bookmark, ArrowLeft, Loader2, User, UserPlus } from 'lucide-react';
+import { Heart,Bookmark, ArrowLeft, Loader2, User, UserPlus, UserRoundCheck } from 'lucide-react';
 import { PATHS } from '@/routes/routes.config';
 import CommentSection from '@/features/comments/components/CommentSection';
 import {type Comment } from '@/features/comments/types';
@@ -13,10 +13,11 @@ export interface BlogPostDetailData {
   username: string;
   content: string;
   cover_image: string;
+  author_profile_pic: string;
   likes: number;
   isLiked?: boolean;
   isSaved?: boolean;
-  isFollowed?: boolean;
+  isFollowing?: boolean;
   comments: Comment[];
 }
 
@@ -25,6 +26,7 @@ export default function PostDetailPage() {
   const [post, setPost] = useState<BlogPostDetailData | null>(null);
   const [isPostSaved, setIsPostSaved] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(false);
   const [error, setError] = useState<string | null>(null);
   const { callAPI, setIsLoggedIn, setUser } = useAuth();
   const navigate = useNavigate();
@@ -33,10 +35,8 @@ export default function PostDetailPage() {
   useEffect(() => {
     const fetchPostDetail = async () => {
       try {
-
         setLoading(true);
         setError(null);
-
         const response = await callAPI(`/post/getpost/${postId}`,
             {
                 credentials: 'include',
@@ -51,9 +51,10 @@ export default function PostDetailPage() {
         if (!response.success) {
           throw new Error(`Failed to load post.`);
         }
-        console.log("RESPONSE", response);
+
         const data: BlogPostDetailData = response.data;
         setPost(data);
+        setIsFollowed(data.isFollowing);
         
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred while loading post');
@@ -61,11 +62,9 @@ export default function PostDetailPage() {
         setLoading(false);
       }
     };
-    
     if (postId) {
       fetchPostDetail();
     }
-
   }, [postId]);
   usePageTitle(post?.title ?? 'Post Detail');
   const handleSave = async() => {
@@ -141,6 +140,36 @@ export default function PostDetailPage() {
     });
   };
 
+  const handleFollow = async () => {
+    try{
+
+      const response = await callAPI('/user/updateauthorfollowing',{
+        method: "POST",
+        headers: {'Content-Type' : 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({
+          postId: postId,
+        })
+      });
+
+      if(!response.isSessionActive){
+        setUser(null);
+        navigate('/login');
+      }
+      
+      if (!response.success) {
+        throw new Error('Failed to update like status');
+      }
+      setIsFollowed(!isFollowed);
+
+    }
+    catch(err){
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    }
+
+
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -190,7 +219,7 @@ export default function PostDetailPage() {
           <div className="flex items-center flex-row space-x-2">
             <div className='h-10 w-10 rounded-full overflow-hidden'>
               <img
-                src={post.cover_image || undefined}
+                src={post.author_profile_pic || undefined}
                 crossOrigin="use-credentials"
                 alt='coverPic'
                 className='h-full w-full object-cover'
@@ -201,15 +230,26 @@ export default function PostDetailPage() {
               <span className="font-semibold text-left text-md pl-1 text-slate-700 capitalize">{post.username}</span>
               <button
                 className={`flex items-center space-x-1 px-3 py-1 rounded-full transition-colors ${
-                  post.isFollowed
+                  isFollowed
                     ? 'bg-rose-50 text-rose-600 font-medium'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
+                onClick={handleFollow}
               >
-                <div className='flex flex-row items-center gap-1 text-xs'>
-                  <UserPlus className={`h-3 w-3 inline ${post.isFollowed ? 'fill-current' : ''}`} />
-                  <span>Follow</span>
-                </div>
+                
+                  {isFollowed ? (
+                    <div className='flex flex-row items-center gap-1 text-xs'>
+                      <UserRoundCheck className={`h-3 w-3 inline fill-current}`} />
+                      <span>Followed</span>
+                    </div>
+                  ) : (
+                    <div className='flex flex-row items-center gap-1 text-xs'>
+                      <UserPlus className={`h-3 w-3 inline}`} />
+                      <span>Follow</span>
+                    </div>
+                  )}
+                  
+                
               </button>
             </div>
 
