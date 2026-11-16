@@ -17,6 +17,14 @@
       "destination": "https://privateblogapibackend-production.up.railway.app/user/:path*"
     },
     {
+      "source": "/profile_pic/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/profile_pic/:path*"
+    },
+    {
+      "source": "/cover_image/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/cover_image/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
