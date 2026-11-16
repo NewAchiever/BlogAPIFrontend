@@ -1,5 +1,21 @@
 {
   "rewrites": [
+     {
+      "source": "/auth/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/auth/:path*"
+    },
+    {
+      "source": "/post/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/post/:path*"
+    },
+    {
+      "source": "/comment/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/comment/:path*"
+    },
+    {
+      "source": "/user/:path*",
+      "destination": "https://privateblogapibackend-production.up.railway.app/user/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
